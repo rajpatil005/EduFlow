@@ -1,0 +1,34 @@
+# ==============================
+# Environment / Secrets
+# ==============================
+.env
+.env.*
+!.env.example
+
+# ==============================
+# Node / Frontend
+# ==============================
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+
+# ==============================
+# Java / Spring Boot
+# ==============================
+backend/target/
+backend/.mvn/
+backend/*.log
+
+# ==============================
+# IntelliJ IDEA
+# ==============================
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# ==============================
+# OS
+# ==============================
+.DS_Store
+Thumbs.db
