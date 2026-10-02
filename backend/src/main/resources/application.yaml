@@ -1,3 +1,16 @@
 spring:
   application:
     name: backend
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/eduflow}
+    username: ${DB_USERNAME:eduflow_app}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+  flyway:
+    enabled: true
