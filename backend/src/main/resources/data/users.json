@@ -1,0 +1,62 @@
+[
+  {
+    "name": "System Admin",
+    "role": "Admin",
+    "email": "admin@eduflow.com"
+  },
+  {
+    "name": "Department HOD",
+    "role": "HOD",
+    "email": "hod@eduflow.com"
+  },
+  {
+    "name": "Aarav Patil",
+    "role": "Teacher",
+    "email": "teacher1@eduflow.com"
+  },
+  {
+    "name": "Rohan Shinde",
+    "role": "Teacher",
+    "email": "teacher2@eduflow.com"
+  },
+  {
+    "name": "Sneha Patil",
+    "role": "Teacher",
+    "email": "teacher3@eduflow.com"
+  },
+  {
+    "name": "Aditya More",
+    "role": "Teacher",
+    "email": "teacher4@eduflow.com"
+  },
+  {
+    "name": "Student One",
+    "role": "Student",
+    "email": "student1@eduflow.com"
+  },
+  {
+    "name": "Student Two",
+    "role": "Student",
+    "email": "student2@eduflow.com"
+  },
+  {
+    "name": "Student Three",
+    "role": "Student",
+    "email": "student3@eduflow.com"
+  },
+  {
+    "name": "Student Four",
+    "role": "Student",
+    "email": "student4@eduflow.com"
+  },
+  {
+    "name": "Student Five",
+    "role": "Student",
+    "email": "student5@eduflow.com"
+  },
+  {
+    "name": "Student Six",
+    "role": "Student",
+    "email": "student6@eduflow.com"
+  }
+]
