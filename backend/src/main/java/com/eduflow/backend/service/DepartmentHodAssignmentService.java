@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -29,30 +30,24 @@ public class DepartmentHodAssignmentService {
             UUID teacherId,
             UUID assignedByUserId) {
 
-        // 1. Check that the department exists
         if (!departmentRepository.existsById(departmentId)) {
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Department not found"
+                    HttpStatus.NOT_FOUND, "Department not found"
             );
         }
 
-        // 2. Check that the teacher exists
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Teacher not found"
+                        HttpStatus.NOT_FOUND, "Teacher not found"
                 ));
 
-        // 3. Ensure the teacher belongs to this department
-        if (!teacher.getDepartmentId().equals(departmentId)) {
+        if (!departmentId.equals(teacher.getDepartmentId())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Teacher does not belong to this department"
             );
         }
 
-        // 4. Check whether this teacher is already the active HOD
         var currentAssignment =
                 assignmentRepository.findByDepartmentIdAndEndedAtIsNull(
                         departmentId
@@ -66,13 +61,11 @@ public class DepartmentHodAssignmentService {
             );
         }
 
-        // 5. End the previous HOD assignment, if one exists
         currentAssignment.ifPresent(assignment -> {
             assignment.setEndedAt(Instant.now());
             assignmentRepository.save(assignment);
         });
 
-        // 6. Create the new HOD assignment
         DepartmentHodAssignment newAssignment =
                 new DepartmentHodAssignment();
 
@@ -80,18 +73,63 @@ public class DepartmentHodAssignmentService {
         newAssignment.setTeacherId(teacherId);
         newAssignment.setAssignedBy(assignedByUserId);
         newAssignment.setAssignedAt(Instant.now());
-        newAssignment.setEndedAt(null);
 
         DepartmentHodAssignment savedAssignment =
                 assignmentRepository.save(newAssignment);
 
-        // 7. Return the response
+        return toResponse(savedAssignment, "HOD assigned successfully");
+    }
+
+    @Transactional(readOnly = true)
+    public HodAssignmentResponse getCurrentHod(UUID departmentId) {
+        ensureDepartmentExists(departmentId);
+
+        DepartmentHodAssignment assignment = assignmentRepository
+                .findByDepartmentIdAndEndedAtIsNull(departmentId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "No active HOD assigned to this department"
+                ));
+
+        return toResponse(assignment, "Current HOD");
+    }
+
+    @Transactional(readOnly = true)
+    public List<HodAssignmentResponse> getHodHistory(UUID departmentId) {
+        ensureDepartmentExists(departmentId);
+
+        return assignmentRepository
+                .findAllByDepartmentIdOrderByAssignedAtDesc(departmentId)
+                .stream()
+                .map(assignment ->
+                        toResponse(assignment, historyMessage(assignment)))
+                .toList();
+    }
+
+    private void ensureDepartmentExists(UUID departmentId) {
+        if (!departmentRepository.existsById(departmentId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Department not found"
+            );
+        }
+    }
+
+    private String historyMessage(DepartmentHodAssignment assignment) {
+        return assignment.getEndedAt() == null
+                ? "Current HOD appointment"
+                : "Previous HOD appointment";
+    }
+
+    private HodAssignmentResponse toResponse(
+            DepartmentHodAssignment assignment,
+            String message) {
+
         return new HodAssignmentResponse(
-                savedAssignment.getDepartmentId(),
-                savedAssignment.getTeacherId(),
-                savedAssignment.getAssignedBy(),
-                savedAssignment.getAssignedAt(),
-                "HOD assigned successfully"
+                assignment.getDepartmentId(),
+                assignment.getTeacherId(),
+                assignment.getAssignedBy(),
+                assignment.getAssignedAt(),
+                message
         );
     }
 }

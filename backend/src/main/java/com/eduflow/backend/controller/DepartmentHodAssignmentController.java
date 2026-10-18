@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -32,13 +33,11 @@ public class DepartmentHodAssignmentController {
 
         if (principal == null) {
             throw new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED,
-                    "Authentication required"
+                    HttpStatus.UNAUTHORIZED, "Authentication required"
             );
         }
 
-        User admin = userRepository
-                .findByEmail(principal.getUsername())
+        User admin = userRepository.findByEmail(principal.getUsername())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.UNAUTHORIZED,
                         "Authenticated user was not found"
@@ -52,9 +51,21 @@ public class DepartmentHodAssignmentController {
         }
 
         return hodAssignmentService.assignHod(
-                departmentId,
-                request.teacherId(),
-                admin.getId()
+                departmentId, request.teacherId(), admin.getId()
         );
+    }
+
+    @GetMapping("/{departmentId}/hod")
+    public HodAssignmentResponse getCurrentHod(
+            @PathVariable UUID departmentId) {
+
+        return hodAssignmentService.getCurrentHod(departmentId);
+    }
+
+    @GetMapping("/{departmentId}/hod/history")
+    public List<HodAssignmentResponse> getHodHistory(
+            @PathVariable UUID departmentId) {
+
+        return hodAssignmentService.getHodHistory(departmentId);
     }
 }
