@@ -2,8 +2,8 @@
 INSERT INTO users (name, role, email, password_hash)
 VALUES
     ('Admin Demo', 'ADMIN', 'admin.demo@eduflow.local', 'demo-only'),
-    ('Rajesh Patil', 'HOD', 'rajesh.patil@eduflow.local', 'demo-only'),
-    ('Sneha Deshmukh', 'HOD', 'sneha.deshmukh@eduflow.local', 'demo-only'),
+    ('Rajesh Patil', 'TEACHER', 'rajesh.patil@eduflow.local', 'demo-only'),
+    ('Sneha Deshmukh', 'TEACHER', 'sneha.deshmukh@eduflow.local', 'demo-only'),
     ('Amit Kulkarni', 'TEACHER', 'amit.kulkarni@eduflow.local', 'demo-only'),
     ('Priya Shah', 'TEACHER', 'priya.shah@eduflow.local', 'demo-only'),
     ('Rohan Joshi', 'TEACHER', 'rohan.joshi@eduflow.local', 'demo-only'),

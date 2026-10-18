@@ -1,10 +1,18 @@
+
 package com.eduflow.backend.controller;
 
-import com.eduflow.backend.entity.User;
+import com.eduflow.backend.dto.request.UpdateUserRequest;
+import com.eduflow.backend.dto.response.UserResponse;
 import com.eduflow.backend.service.UserService;
+
+import jakarta.validation.Valid;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -18,22 +26,27 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public Page<UserResponse> getAllUsers(
+            @PageableDefault(size = 20) Pageable pageable) {
+        return userService.getAllUsers(pageable);
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable UUID id) {
+    public UserResponse getUserById(@PathVariable UUID id) {
         return userService.getUserById(id);
     }
 
     @PutMapping("/{id}")
-    public User updateUserById(@PathVariable UUID id, @RequestBody User updatedUser) {
-        return userService.updateUserById(id, updatedUser);
+    public UserResponse updateUserById(
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdateUserRequest request) {
+        return userService.updateUserById(id, request);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUserById(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteUserById(
+            @PathVariable UUID id) {
         userService.deleteUserById(id);
+        return ResponseEntity.noContent().build();
     }
 }
