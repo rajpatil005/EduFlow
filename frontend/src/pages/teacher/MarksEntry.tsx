@@ -30,19 +30,18 @@ export default function MarksEntry() {
   const availableDivisions = mockDivisions.filter((d) => d.semesterId === semesterId);
   const availableSubjects = mockSubjectsData.filter((s) => s.semesterId === semesterId);
 
-  // Load Scheme Components
   useEffect(() => {
     const saved = localStorage.getItem(`assessment_components_${subjectId}`);
     if (saved) {
       setComponents(JSON.parse(saved));
     } else {
       const subsComponents = mockComponents.filter(c => c.subjectId === subjectId);
-      setComponents(subsComponents.length > 0 ? subsComponents : [
+      setComponents(subsComponents.length > 0 ? subsComponents as AssessmentComponent[] : [
         { id: `c1-${subjectId}`, subjectId, name: 'UT1', maxMarks: 20, weightage: 10, type: 'UNIT_TEST' },
         { id: `c2-${subjectId}`, subjectId, name: 'UT2', maxMarks: 20, weightage: 10, type: 'UNIT_TEST' },
         { id: `c3-${subjectId}`, subjectId, name: 'CIE', maxMarks: 30, weightage: 40, type: 'PRACTICAL' },
         { id: `c4-${subjectId}`, subjectId, name: 'FINAL', maxMarks: 50, weightage: 40, type: 'FINAL' },
-      ]);
+      ] as AssessmentComponent[]);
     }
   }, [subjectId]);
 
@@ -55,7 +54,6 @@ export default function MarksEntry() {
     if (!availableSubjects.find((s) => s.id === subjectId)) setSubjectId(availableSubjects[0]?.id ?? '');
   }, [semesterId]);
 
-  // Load Students (Inputs blank thevle ahet, NaN nahi)
   useEffect(() => {
     if (!programmeId || !semesterId || !divisionId || !subjectId) return;
     setLoading(true);
@@ -66,7 +64,7 @@ export default function MarksEntry() {
           rollNo: s.rollNo,
           studentName: s.fullName,
           examSeatNo: `E20250${i + 1}${i + 10}`,
-          ut1: 0, ut1Improvement: 0, finalUt1: 0, // 0 thevle ahet
+          ut1: 0, ut1Improvement: 0, finalUt1: 0,
           ut2: 0, ut2Improvement: 0, finalUt2: 0,
           maxUt: 0, convertedTo30: 0,
           cieParameters: 0, totalCie: 0,
@@ -77,7 +75,6 @@ export default function MarksEntry() {
     }, 300);
   }, [programmeId, semesterId, divisionId, subjectId]);
 
-  // ⭐ Scheme Object Banavto
   const getScheme = (): MarkingScheme => {
     const utComp = components.find(c => c.name.includes('UT'));
     const cieComp = components.find(c => c.name === 'CIE' || c.name.includes('P-A'));
@@ -94,22 +91,17 @@ export default function MarksEntry() {
 
   const scheme = getScheme();
 
-  // Handle Change
-  const setField = (rowIndex: number, colIndex: number, field: keyof StudentMarksEntry, value: string) => {
+  const setField = (rowIndex: number, field: keyof StudentMarksEntry, value: string) => {
     setStudents((prev) => prev.map((s, i) => {
       if (i === rowIndex) {
-        // Jar empty string aala tar 0, nahi tar number
         const numValue = value === '' ? 0 : Number(value);
-        const updated = { ...s, [field]: numValue };
-        
-        // ⭐ SCHEME OBJECT PASS KELA AHE ITHE
-        return calculateMarks(updated, scheme);
+        const updated = { ...s, [field]: field === 'examSeatNo' ? value : numValue };
+        return calculateMarks(updated as StudentMarksEntry, scheme);
       }
       return s;
     }));
   };
 
-  // Keyboard Navigation
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, rowIndex: number, colIndex: number, maxCols: number) => {
     let nextRow = rowIndex;
     let nextCol = colIndex;
@@ -216,25 +208,23 @@ export default function MarksEntry() {
                         <tr key={s.studentId}>
                           <td className="px-2 py-2 text-left font-medium">{s.rollNo}</td>
                           
-                          {/* UT-1 Input */}
                           <td className="px-2 py-2">
                             <input 
                               ref={el => { if (inputRefs.current[rowIndex]) inputRefs.current[rowIndex][0] = el; }}
                               type="number" min={0} max={scheme.utMaxMarks} 
-                              value={s.ut1 === 0 ? '' : s.ut1} // ⭐ 0 asel tar blank disel
-                              onChange={(e) => setField(rowIndex, 0, 'ut1', e.target.value)} 
+                              value={s.ut1 === 0 ? '' : s.ut1}
+                              onChange={(e) => setField(rowIndex, 'ut1', e.target.value)} 
                               onKeyDown={(e) => handleKeyDown(e, rowIndex, 0, 4)} 
                               className="w-14 mx-auto block border border-slate-300 rounded px-1 py-1 text-center focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none" 
                             />
                           </td>
 
-                          {/* UT-1 Improve Input */}
                           <td className="px-2 py-2">
                             <input 
                               ref={el => { if (inputRefs.current[rowIndex]) inputRefs.current[rowIndex][1] = el; }}
                               type="number" min={0} max={scheme.utMaxMarks} 
-                              value={s.ut1Improvement === 0 ? '' : s.ut1Improvement} // ⭐
-                              onChange={(e) => setField(rowIndex, 1, 'ut1Improvement', e.target.value)} 
+                              value={s.ut1Improvement === 0 ? '' : s.ut1Improvement}
+                              onChange={(e) => setField(rowIndex, 'ut1Improvement', e.target.value)} 
                               onKeyDown={(e) => handleKeyDown(e, rowIndex, 1, 4)} 
                               className="w-14 mx-auto block border border-slate-300 rounded px-1 py-1 text-center focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none" 
                             />
@@ -242,25 +232,23 @@ export default function MarksEntry() {
                           
                           <td className="px-2 py-2 font-semibold bg-slate-50">{s.finalUt1}</td>
                           
-                          {/* UT-2 Input */}
                           <td className="px-2 py-2">
                             <input 
                               ref={el => { if (inputRefs.current[rowIndex]) inputRefs.current[rowIndex][2] = el; }}
                               type="number" min={0} max={scheme.utMaxMarks} 
-                              value={s.ut2 === 0 ? '' : s.ut2} // ⭐
-                              onChange={(e) => setField(rowIndex, 2, 'ut2', e.target.value)} 
+                              value={s.ut2 === 0 ? '' : s.ut2}
+                              onChange={(e) => setField(rowIndex, 'ut2', e.target.value)} 
                               onKeyDown={(e) => handleKeyDown(e, rowIndex, 2, 4)} 
                               className="w-14 mx-auto block border border-slate-300 rounded px-1 py-1 text-center focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none" 
                             />
                           </td>
 
-                          {/* UT-2 Improve Input */}
                           <td className="px-2 py-2">
                             <input 
                               ref={el => { if (inputRefs.current[rowIndex]) inputRefs.current[rowIndex][3] = el; }}
                               type="number" min={0} max={scheme.utMaxMarks} 
-                              value={s.ut2Improvement === 0 ? '' : s.ut2Improvement} // ⭐
-                              onChange={(e) => setField(rowIndex, 3, 'ut2Improvement', e.target.value)} 
+                              value={s.ut2Improvement === 0 ? '' : s.ut2Improvement}
+                              onChange={(e) => setField(rowIndex, 'ut2Improvement', e.target.value)} 
                               onKeyDown={(e) => handleKeyDown(e, rowIndex, 3, 4)} 
                               className="w-14 mx-auto block border border-slate-300 rounded px-1 py-1 text-center focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none" 
                             />
@@ -276,7 +264,6 @@ export default function MarksEntry() {
                 </table>
               )}
 
-              {/* TAB 2: CIE + FINAL */}
               {activeTab === 'CIE' && (
                 <table className="w-full text-sm text-center">
                   <thead className="bg-slate-50 border-b border-slate-200">
@@ -306,7 +293,7 @@ export default function MarksEntry() {
                             <input 
                               ref={el => { if (inputRefs.current[rowIndex]) inputRefs.current[rowIndex][0] = el; }}
                               type="text" value={s.examSeatNo} 
-                              onChange={(e) => setField(rowIndex, 0, 'examSeatNo', e.target.value)} 
+                              onChange={(e) => setField(rowIndex, 'examSeatNo', e.target.value)} 
                               onKeyDown={(e) => handleKeyDown(e, rowIndex, 0, 2)}
                               className="w-20 border border-slate-300 rounded px-1 py-1 text-xs" 
                             />
@@ -321,8 +308,8 @@ export default function MarksEntry() {
                                 <input 
                                   ref={el => { if (inputRefs.current[rowIndex]) inputRefs.current[rowIndex][1] = el; }}
                                   type="number" min={0} max={scheme.cieMaxMarks} 
-                                  value={s.cieParameters === 0 ? '' : s.cieParameters} // ⭐
-                                  onChange={(e) => setField(rowIndex, 1, 'cieParameters', e.target.value)} 
+                                  value={s.cieParameters === 0 ? '' : s.cieParameters}
+                                  onChange={(e) => setField(rowIndex, 'cieParameters', e.target.value)} 
                                   onKeyDown={(e) => handleKeyDown(e, rowIndex, 1, 2)}
                                   className="w-16 mx-auto block border border-indigo-300 rounded px-1 py-1 text-center" 
                                 />
@@ -335,8 +322,8 @@ export default function MarksEntry() {
                           <td className="px-2 py-2 bg-emerald-50">
                             <input 
                               type="number" min={0} max={scheme.finalMaxMarks} 
-                              value={s.finalEvaluation === 0 ? '' : s.finalEvaluation} // ⭐
-                              onChange={(e) => setField(rowIndex, 0, 'finalEvaluation', e.target.value)} 
+                              value={s.finalEvaluation === 0 ? '' : s.finalEvaluation}
+                              onChange={(e) => setField(rowIndex, 'finalEvaluation', e.target.value)} 
                               className="w-16 mx-auto block border border-emerald-300 rounded px-1 py-1 text-center" 
                             />
                           </td>

@@ -27,9 +27,8 @@ export default function Assessments() {
     } else {
       const subsComponents = mockComponents.filter(c => c.subjectId === subjectId);
       if (subsComponents.length > 0) {
-        setComponents(subsComponents);
+        setComponents(subsComponents as AssessmentComponent[]); 
       } else {
-        // Fallback
         setComponents([
           { id: `c1-${subjectId}`, subjectId, name: 'UT1', maxMarks: 20, weightage: 10, type: 'UNIT_TEST' },
           { id: `c2-${subjectId}`, subjectId, name: 'UT2', maxMarks: 20, weightage: 10, type: 'UNIT_TEST' },

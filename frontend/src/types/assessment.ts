@@ -1,12 +1,23 @@
-// ... existing types ...
+export type AssessmentType = 'UT1' | 'UT2' | 'P-A' | 'P-B' | 'P-C' | 'P-D' | 'P-F' | 'FINAL' | 'CIE';
+export type ComponentType = 'UNIT_TEST' | 'PRACTICAL' | 'FINAL';
+export type MarksStatus = 'DRAFT' | 'SUBMITTED' | 'VERIFIED' | 'LOCKED';
+
+export interface AssessmentComponent {
+  id: string;
+  subjectId: string;
+  name: AssessmentType;
+  maxMarks: number;
+  weightage: number;
+  type: string; // ⭐ 'ComponentType' chya jagi 'string' kela jene karun mock data error dein nahi
+}
 
 export interface MarkingScheme {
-  utMaxMarks: number;        // Ex: 30
-  utWeightagePercent: number; // Ex: 60 (For UT conversion)
-  cieMaxMarks: number;       // Ex: 30
-  cieWeightagePercent: number;// Ex: 40
-  finalMaxMarks: number;     // Ex: 50
-  isCieEnabled: boolean;     // Jar CIE nasel tar false
+  utMaxMarks: number;
+  utWeightagePercent: number;
+  cieMaxMarks: number;
+  cieWeightagePercent: number;
+  finalMaxMarks: number;
+  isCieEnabled: boolean;
 }
 
 export interface StudentMarksEntry {
@@ -14,8 +25,6 @@ export interface StudentMarksEntry {
   rollNo: string;
   studentName: string;
   examSeatNo: string;
-
-  // Proforma-C (Unit Test)
   ut1: number;
   ut1Improvement: number;
   finalUt1: number;
@@ -23,13 +32,17 @@ export interface StudentMarksEntry {
   ut2Improvement: number;
   finalUt2: number;
   maxUt: number;
-  convertedTo30: number; // (Or converted to utMaxMarks)
-
-  // Proforma-E (CIE)
+  convertedTo30: number;
   cieParameters: number;
   totalCie: number;
-
-  // Final Evaluation
   finalEvaluation: number;
   totalFinal: number;
+}
+
+export interface BulkMarksPayload {
+  programmeId: string;
+  semesterId: string;
+  divisionId: string;
+  subjectId: string;
+  entries: StudentMarksEntry[];
 }
