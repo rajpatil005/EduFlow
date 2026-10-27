@@ -139,7 +139,7 @@ export default function MarksEntry() {
     <div>
       <PageHeader 
         title="Marks Entry" 
-        subtitle={`Use Arrow Keys/Enter. Scheme: UT(${scheme.utMaxMarks}) + CIE(${scheme.cieMaxMarks}) + Final(${scheme.finalMaxMarks})`} 
+        // subtitle={`Use Arrow Keys/Enter. Scheme: UT(${scheme.utMaxMarks}) + CIE(${scheme.cieMaxMarks}) + Final(${scheme.finalMaxMarks})`} 
       />
 
       <Card className="mb-5">
