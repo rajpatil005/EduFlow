@@ -1,6 +1,8 @@
+import type { ReactNode } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Sidebar, SidebarLink } from './Sidebar';
+import { Sidebar } from './Sidebar';
 import { Header } from './Header';
+import type { SidebarLink } from './Sidebar';
 
 interface MainLayoutProps {
   links: SidebarLink[];
@@ -8,6 +10,7 @@ interface MainLayoutProps {
   userName?: string;
   userRole?: string;
   onLogout?: () => void;
+  children?: ReactNode;
 }
 
 export const MainLayout = ({
@@ -16,17 +19,25 @@ export const MainLayout = ({
   userName,
   userRole,
   onLogout,
-}: MainLayoutProps) => (
-    
-  <div className="flex h-screen bg-slate-50">
-    <Sidebar links={links} title={title} />
-    <div className="flex-1 flex flex-col overflow-hidden">
-      <Header userName={userName} userRole={userRole} onLogout={onLogout} />
-      <main className="flex-1 overflow-y-auto p-6">
-        <div className="max-w-7xl mx-auto">
-          <Outlet />
-        </div>
-      </main>
+  children,
+}: MainLayoutProps) => {
+  return (
+    <div className="flex h-screen w-full overflow-hidden bg-slate-50">
+      <Sidebar links={links} title={title} />
+
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+        <Header
+          userName={userName}
+          userRole={userRole}
+          onLogout={onLogout}
+        />
+
+        <main className="min-h-0 flex-1 overflow-y-auto p-6">
+          {children ?? <Outlet />}
+        </main>
+      </div>
     </div>
-  </div>
-);
+  );
+};
+
+export default MainLayout;
