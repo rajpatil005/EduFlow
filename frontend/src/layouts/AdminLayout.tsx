@@ -1,34 +1,53 @@
-import { Outlet } from 'react-router-dom';
-import { MainLayout } from '../components/layout';
-import { useAuth } from '../hooks/useAuth';
-import type { SidebarLink } from '../components/layout/Sidebar';
+import { useState } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { Sidebar, SidebarLink } from '@/components/layout/Sidebar';
+import { Header } from '@/components/layout/Header';
+import { useAuth } from '@/hooks/useAuth';
 
 const adminLinks: SidebarLink[] = [
   { label: 'Dashboard', path: '/admin/dashboard' },
-  { label: 'Students', path: '/admin/students' },
-  { label: 'Teachers', path: '/admin/teachers' },
+  { label: 'Users', path: '/admin/users' },
   { label: 'Departments', path: '/admin/departments' },
+  { label: 'Programmes', path: '/admin/programmes' },
+  { label: 'Academic Years', path: '/admin/academic-years' },
+  { label: 'Semesters', path: '/admin/semesters' },
+  { label: 'Divisions', path: '/admin/divisions' },
   { label: 'Subjects', path: '/admin/subjects' },
-  { label: 'Attendance', path: '/admin/attendance' },
-  { label: 'Marks Entry', path: '/admin/marks' },
-  { label: 'Timetable', path: '/admin/timetable' },
-  { label: 'Reports', path: '/admin/reports' },
+  { label: 'HOD Management', path: '/admin/hod' },
+  { label: 'Audit Logs', path: '/admin/audit' },
 ];
 
 export const AdminLayout = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login', { replace: true });
+  };
 
   return (
-    <MainLayout
-      title="EduFlow Admin"
-      links={adminLinks}
-      userName={user?.name ?? 'Admin'}
-      userRole="Administrator"
-      onLogout={logout}
-    >
-      <Outlet />
-    </MainLayout>
+    <div className="flex h-screen bg-slate-50 overflow-hidden">
+      <Sidebar 
+        links={adminLinks} 
+        title="Admin" 
+        isOpen={isSidebarOpen} 
+        onClose={() => setIsSidebarOpen(false)} 
+      />
+      <div className="flex-1 flex flex-col min-w-0">
+        <Header
+          userName={user?.name ?? 'Admin'}
+          userRole={user?.role ?? 'ADMIN'}
+          onLogout={handleLogout} 
+          onMenuClick={() => setIsSidebarOpen(true)} 
+        />
+        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
+          <div className="max-w-7xl mx-auto">
+            <Outlet />
+          </div>
+        </main>
+      </div>
+    </div>
   );
 };
-
-export default AdminLayout;

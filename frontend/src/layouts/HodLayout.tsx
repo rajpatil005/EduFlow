@@ -1,33 +1,49 @@
-import {Outlet} from 'react-router-dom';
-import {MainLayout} from '../components/layout';
-import {useAuth} from '../hooks/useAuth';
-import type {SidebarLink} from '../components/layout/Sidebar';
+import { useState } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { Sidebar, SidebarLink } from '@/components/layout/Sidebar';
+import { Header } from '@/components/layout/Header';
+import { useAuth } from '@/hooks/useAuth';
 
 const hodLinks: SidebarLink[] = [
-  {label: 'Dashboard', path: '/hod/dashboard'},
-  {label: 'Teachers', path: '/hod/teachers'},
-  {label: 'Students', path: '/hod/students'},
-  {label: 'Subjects', path: '/hod/subjects'},
-  {label: 'Attendance', path: '/hod/attendance'},
-  {label: 'Marks', path: '/hod/marks'},
-  {label: 'Timetable', path: '/hod/timetable'},
-  {label: 'Reports', path: '/hod/reports'},
+  { label: 'Dashboard', path: '/hod/dashboard' },
+  { label: 'Teachers', path: '/hod/teachers' },
+  { label: 'Distribution', path: '/hod/distribution' },
+  { label: 'Verification', path: '/hod/verification' },
+  { label: 'Subjects', path: '/hod/subjects' },
+  { label: 'Reports', path: '/hod/reports' },
 ];
 
 export const HodLayout = () => {
-  const {user, logout} = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login', { replace: true });
+  };
 
   return (
-    <MainLayout
-      title="EduFlow HOD"
-      links={hodLinks}
-      userName={user?.name ?? 'HOD'}
-      userRole="Head of Department"
-      onLogout={logout}
-    >
-      <Outlet />
-    </MainLayout>
+    <div className="flex h-screen bg-slate-50 overflow-hidden">
+      <Sidebar 
+        links={hodLinks} 
+        title="HOD" 
+        isOpen={isSidebarOpen} 
+        onClose={() => setIsSidebarOpen(false)} 
+      />
+      <div className="flex-1 flex flex-col min-w-0">
+        <Header
+          userName={user?.name ?? 'HOD'}
+          userRole={user?.role ?? 'HOD'}
+          onLogout={handleLogout} 
+          onMenuClick={() => setIsSidebarOpen(true)} 
+        />
+        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
+          <div className="max-w-7xl mx-auto">
+            <Outlet />
+          </div>
+        </main>
+      </div>
+    </div>
   );
 };
-
-export default HodLayout;

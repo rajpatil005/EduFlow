@@ -144,7 +144,7 @@ export default function MarksEntry() {
 
       <Card className="mb-5">
         <CardBody>
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <Select label="Class" value={programmeId} onChange={(e) => setProgrammeId(e.target.value)}>
               {mockProgrammes.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
             </Select>
@@ -163,10 +163,10 @@ export default function MarksEntry() {
 
       {loading ? <LoadingState /> : (
         <>
-          <div className="flex border-b border-slate-200 mb-4">
+          <div className="flex border-b border-slate-200 mb-4 overflow-x-auto whitespace-nowrap">
             <button
               onClick={() => setActiveTab('UT')}
-              className={`px-6 py-3 font-semibold text-sm transition-colors ${
+              className={`px-4 sm:px-6 py-3 font-semibold text-sm transition-colors ${
                 activeTab === 'UT' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-slate-500 hover:text-slate-700'
               }`}
             >
@@ -174,7 +174,7 @@ export default function MarksEntry() {
             </button>
             <button
               onClick={() => setActiveTab('CIE')}
-              className={`px-6 py-3 font-semibold text-sm transition-colors ${
+              className={`px-4 sm:px-6 py-3 font-semibold text-sm transition-colors ${
                 activeTab === 'CIE' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-slate-500 hover:text-slate-700'
               }`}
             >
@@ -183,11 +183,11 @@ export default function MarksEntry() {
           </div>
 
           <Card className="overflow-hidden mb-4">
-            <div className="overflow-x-auto">
+            {/* ⭐ Mobile var table scroll hoil */}
+            <div className="overflow-x-auto w-full pb-2">
               
-              {/* TAB 1: UT */}
               {activeTab === 'UT' && (
-                <table className="w-full text-sm text-center">
+                <table className="w-full text-sm text-center min-w-[800px]"> {/* ⭐ min-w add kela */}
                   <thead className="bg-slate-50 border-b border-slate-200">
                     <tr>
                       <th className="px-2 py-2 text-left text-xs uppercase text-slate-600">Roll No</th>
@@ -265,7 +265,7 @@ export default function MarksEntry() {
               )}
 
               {activeTab === 'CIE' && (
-                <table className="w-full text-sm text-center">
+                <table className="w-full text-sm text-center min-w-[800px]"> {/* ⭐ min-w add kela */}
                   <thead className="bg-slate-50 border-b border-slate-200">
                     <tr>
                       <th className="px-2 py-2 text-left text-xs uppercase text-slate-600">Exam Seat</th>
