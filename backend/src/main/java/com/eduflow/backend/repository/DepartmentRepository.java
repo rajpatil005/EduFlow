@@ -1,3 +1,4 @@
+
 package com.eduflow.backend.repository;
 
 import com.eduflow.backend.entity.Department;
@@ -7,4 +8,6 @@ import java.util.UUID;
 
 public interface DepartmentRepository
         extends JpaRepository<Department, UUID> {
+
+    boolean existsByCode(String code);
 }

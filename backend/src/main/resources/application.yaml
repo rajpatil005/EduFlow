@@ -14,3 +14,13 @@ spring:
 
   flyway:
     enabled: true
+
+app:
+  jwt:
+    secret: ${EDUFLOW_JWT_SECRET}
+    expiration-ms: 86400000
+
+logging:
+  level:
+    org.springframework.security: TRACE
+    com.eduflow.backend.security: DEBUG

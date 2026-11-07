@@ -8,6 +8,7 @@ import com.eduflow.backend.entity.Role;
 import com.eduflow.backend.repository.DepartmentRepository;
 import com.eduflow.backend.repository.TeacherRepository;
 import com.eduflow.backend.repository.UserRepository;
+import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 
@@ -79,5 +80,59 @@ public class TeacherService {
                 savedTeacher.getEmployeeId(),
                 savedTeacher.getDepartmentId()
         );
+    }
+
+    @Transactional
+    public void deactivateTeacher(UUID teacherId) {
+
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Teacher not found"
+                ));
+
+        User user = userRepository.findById(teacher.getUserId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Teacher user account not found"
+                ));
+
+        if (!user.isActive()) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Teacher is already deactivated"
+            );
+        }
+
+        user.deactivate();
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void activateTeacher(UUID teacherId) {
+
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Teacher not found"
+                ));
+
+        User user = userRepository.findById(teacher.getUserId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Teacher user account not found"
+                ));
+
+        if (user.isActive()) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Teacher is already active"
+            );
+        }
+
+        user.activate();
+
+        userRepository.save(user);
     }
 }

@@ -17,11 +17,5 @@ public class TeacherController {
 
     private final TeacherService teacherService;
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public TeacherResponse createTeacher(
-            @Valid @RequestBody CreateTeacherRequest request) {
 
-        return teacherService.createTeacher(request);
-    }
 }
