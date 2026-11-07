@@ -18,3 +18,4 @@ export * from './EmptyState';
 export * from './Pagination';
 export * from './DatePicker';
 export * from './ConfirmDialog';
+export * from './Toast';

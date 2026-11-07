@@ -1,62 +1,62 @@
 import { NavLink } from 'react-router-dom';
-import { ReactNode } from 'react';
+import { X } from 'lucide-react'; 
 
 export interface SidebarLink {
   label: string;
   path: string;
-  icon?: ReactNode;
 }
 
 interface SidebarProps {
   links: SidebarLink[];
   title: string;
-  subtitle?: string;
+  isOpen: boolean;      
+  onClose: () => void; 
 }
 
-export const Sidebar = ({ links, title, subtitle }: SidebarProps) => (
-  <aside className="w-64 bg-white border-r border-slate-200 flex flex-col">
-    <div className="h-16 flex items-center gap-2 px-5 border-b border-slate-200">
-      <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
-        EF
-      </div>
-      <div>
+export const Sidebar = ({ links, title, isOpen, onClose }: SidebarProps) => {
+  return (
+    <>
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden" 
+          onClick={onClose} 
+        />
+      )}
 
-        <h1 className="text-base font-bold text-slate-900 leading-tight">EduFlow</h1>
-        <p className="text-[11px] text-slate-500 leading-tight">{title}</p>
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 flex flex-col transform transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200">
+          <div className="flex items-center gap-2">
+             <h1 className="text-xl font-bold text-blue-700">EduFlow</h1>
+             <span className="text-xs text-gray-500">({title})</span>
+          </div>
+          <button onClick={onClose} className="lg:hidden text-gray-500 hover:text-gray-800">
+             ✕
+          </button>
+        </div>
         
-      </div>
-    </div>
-    <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
-      {links.map((item) => (
-        <NavLink
-          key={item.path}
-          to={item.path}
-          className={({ isActive }) =>
-            `group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-              isActive
-                ? 'bg-indigo-50 text-indigo-700 shadow-sm'
-                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-            }`
-          }
-        >
-          {({ isActive }) => (
-            <>
-              {item.icon && (
-                <span className={isActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600'}>
-                  {item.icon}
-                </span>
-              )}
-              <span>{item.label}</span>
-              {isActive && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-indigo-600" />}
-            </>
-          )}
-        </NavLink>
-      ))}
-    </nav>
-    {subtitle && (
-      <div className="p-4 border-t border-slate-200">
-        <p className="text-xs text-slate-500">{subtitle}</p>
-      </div>
-    )}
-  </aside>
-);
+        <nav className="flex-1 overflow-y-auto p-3 space-y-1">
+          {links.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              onClick={onClose} 
+              className={({ isActive }) =>
+                `block px-4 py-2.5 rounded-md text-sm font-medium transition ${
+                  isActive
+                    ? 'bg-blue-600 text-white'
+                    : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700'
+                }`
+              }
+            >
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+      </aside>
+    </>
+  );
+};
