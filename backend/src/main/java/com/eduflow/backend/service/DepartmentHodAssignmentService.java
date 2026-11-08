@@ -31,23 +31,39 @@ public class DepartmentHodAssignmentService {
     private final TeacherRepository teacherRepository;
     private final UserRepository userRepository;
 
+    // Assign HOD using admin's UUID
     @Transactional
     public HodAssignmentResponse assignHod(
             UUID departmentId,
             UUID teacherId,
             UUID assignedByUserId) {
 
-        // 1. Check department exists
+        // Check department exists
         ensureDepartmentExists(departmentId);
 
-        // 2. Check teacher exists
+        // Check teacher exists
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Teacher not found"
                 ));
 
-        // 3. Ensure teacher belongs to this department
+        // Get teacher's user account
+        User newHodUser = userRepository.findById(teacher.getUserId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Teacher user account not found"
+                ));
+
+        // Ensure teacher is active
+        if (!newHodUser.isActive()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Cannot assign an inactive teacher as HOD"
+            );
+        }
+
+        // Ensure teacher belongs to this department
         if (!departmentId.equals(teacher.getDepartmentId())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
@@ -55,13 +71,13 @@ public class DepartmentHodAssignmentService {
             );
         }
 
-        // 4. Find current active HOD assignment
+        // Find current active HOD assignment
         var currentAssignment =
                 assignmentRepository.findByDepartmentIdAndEndedAtIsNull(
                         departmentId
                 );
 
-        // 5. Prevent assigning the same HOD again
+        // Prevent assigning the same HOD again
         if (currentAssignment.isPresent()
                 && currentAssignment.get().getTeacherId().equals(teacherId)) {
 
@@ -71,19 +87,36 @@ public class DepartmentHodAssignmentService {
             );
         }
 
-        // 6. End previous HOD assignment and revert their role
-        currentAssignment.ifPresent(assignment -> {
+        // Check whether the new HOD is already assigned to another department
+        boolean alreadyHod = assignmentRepository
+                .existsByTeacherIdAndEndedAtIsNull(teacherId);
 
-            assignment.setEndedAt(Instant.now());
-            assignmentRepository.save(assignment);
+        if (alreadyHod) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "This teacher is already assigned as an active HOD in another department"
+            );
+        }
 
+// End previous HOD assignment and revert previous HOD role
+        if (currentAssignment.isPresent()) {
+
+            DepartmentHodAssignment previousAssignment = currentAssignment.get();
+
+            // End previous HOD appointment
+            previousAssignment.setEndedAt(Instant.now());
+
+            assignmentRepository.saveAndFlush(previousAssignment);
+
+            // Find previous HOD teacher
             Teacher previousTeacher = teacherRepository
-                    .findById(assignment.getTeacherId())
+                    .findById(previousAssignment.getTeacherId())
                     .orElseThrow(() -> new ResponseStatusException(
                             HttpStatus.NOT_FOUND,
                             "Previous HOD teacher not found"
                     ));
 
+            // Find previous HOD user
             User previousUser = userRepository
                     .findById(previousTeacher.getUserId())
                     .orElseThrow(() -> new ResponseStatusException(
@@ -91,23 +124,17 @@ public class DepartmentHodAssignmentService {
                             "Previous HOD user not found"
                     ));
 
+            // Revert previous HOD to normal teacher
             previousUser.changeRole(Role.TEACHER);
+
             userRepository.save(previousUser);
-        });
+        }
 
-        // 7. Find new HOD user account
-        User newHodUser = userRepository
-                .findById(teacher.getUserId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Teacher user account not found"
-                ));
-
-        // 8. Promote new teacher to HOD
+        // Promote new teacher to HOD
         newHodUser.changeRole(Role.HOD);
-        userRepository.save(newHodUser);
 
-        // 9. Create new HOD assignment
+        userRepository.save(newHodUser);
+        // Create new HOD assignment
         DepartmentHodAssignment newAssignment =
                 new DepartmentHodAssignment();
 
@@ -120,8 +147,25 @@ public class DepartmentHodAssignmentService {
         DepartmentHodAssignment savedAssignment =
                 assignmentRepository.save(newAssignment);
 
-        // 10. Return response
+        // Return response
         return toResponse(savedAssignment, "HOD assigned successfully");
+    }
+
+    // Assign HOD using authenticated admin's email
+    @Transactional
+    public HodAssignmentResponse assignHodByAdminEmail(
+            UUID departmentId,
+            UUID teacherId,
+            String adminEmail) {
+
+        UUID assignedByUserId = userRepository.findByEmail(adminEmail)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED,
+                        "Authenticated admin not found"
+                ))
+                .getId();
+
+        return assignHod(departmentId, teacherId, assignedByUserId);
     }
 
     // Get current HOD
@@ -183,6 +227,7 @@ public class DepartmentHodAssignmentService {
                 assignment.getTeacherId(),
                 assignment.getAssignedBy(),
                 assignment.getAssignedAt(),
+                assignment.getEndedAt(),
                 message
         );
     }

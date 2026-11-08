@@ -8,5 +8,6 @@ public record HodAssignmentResponse(
         UUID teacherId,
         UUID assignedBy,
         Instant assignedAt,
+        Instant endedAt,
         String message
 ) {}

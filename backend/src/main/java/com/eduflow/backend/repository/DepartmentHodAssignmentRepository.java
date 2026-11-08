@@ -15,4 +15,6 @@ public interface DepartmentHodAssignmentRepository
 
     List<DepartmentHodAssignment>
     findAllByDepartmentIdOrderByAssignedAtDesc(UUID departmentId);
+
+    boolean existsByTeacherIdAndEndedAtIsNull(UUID teacherId);
 }
