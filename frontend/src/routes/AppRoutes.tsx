@@ -18,7 +18,17 @@ import Reports from '@/pages/teacher/Reports';
 
 // Temp chnage develop team members
 import AdminDashboard from '@/pages/admin/Dashboard';
+
+// HOD Pages
 import HodDashboard from '@/pages/hod/Dashboard';
+import HodDepartment from '@/pages/hod/Department';
+import HodTeachers from '@/pages/hod/Teachers';
+import HodStudents from '@/pages/hod/Students';
+import HodSubjects from '@/pages/hod/Subjects';
+import HodTeacherAssignments from '@/pages/hod/TeacherAssignments';
+import HodMarksApproval from '@/pages/hod/MarksApproval';
+import HodAttendance from '@/pages/hod/Attendance';
+import HodReports from '@/pages/hod/Reports';
 
 export const AppRoutes = () => (
   <Routes>
@@ -49,6 +59,14 @@ export const AppRoutes = () => (
     <Route path="/hod" element={<HodLayout />}>
       <Route index element={<Navigate to="dashboard" replace />} />
       <Route path="dashboard" element={<HodDashboard />} />
+      <Route path="department" element={<HodDepartment />} />
+      <Route path="teachers" element={<HodTeachers />} />
+      <Route path="students" element={<HodStudents />} />
+      <Route path="subjects" element={<HodSubjects />} />
+      <Route path="teacher-assignments" element={<HodTeacherAssignments />} />
+      <Route path="marks-approval" element={<HodMarksApproval />} />
+      <Route path="attendance" element={<HodAttendance />} />
+      <Route path="reports" element={<HodReports />} />
     </Route>
 
     <Route path="*" element={<Navigate to="/login" replace />} />
