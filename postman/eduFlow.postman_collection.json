@@ -1,0 +1,1047 @@
+{
+  "info": {
+    "_postman_id": "84d945f6-76cc-4caf-840c-37bf3224eb89",
+    "name": "eduFlow",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51472774",
+    "_collection_link": "https://go.postman.co/collection/51472774-84d945f6-76cc-4caf-840c-37bf3224eb89?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"admin.demo@eduflow.local\",\r\n  \"password\": \"admin_eduflow_password\",\r\n  \"role\": \"ADMIN\"\r\n}\r\n\r\n// {\r\n//   \"email\": \"teacher1.test@eduflow.local\",\r\n//   \"password\": \"Teacher@123\",\r\n//   \"role\": \"TEACHER\"\r\n// }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "teacher",
+      "item": [
+        {
+          "name": "profile",
+          "item": []
+        }
+      ]
+    },
+    {
+      "name": "admin",
+      "item": [
+        {
+          "name": "userManagement",
+          "item": [
+            {
+              "name": "getAllUser",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users"
+                  ],
+                  "query": [
+                    {
+                      "key": "",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "getUserById",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/0496f58f-3287-4f32-a5bf-dc0a4b43cd46",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "0496f58f-3287-4f32-a5bf-dc0a4b43cd46"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "updateUser",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"Raj Patil Updated\",\r\n  \"email\": \"raj.updated@example.com\",\r\n  \"role\": \"STUDENT\",\r\n  \"passwordHash\": \"your-existing-password-hash\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/0496f58f-3287-4f32-a5bf-dc0a4b43cd46",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "0496f58f-3287-4f32-a5bf-dc0a4b43cd46"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "deleteUserById",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/0496f58f-3287-4f32-a5bf-dc0a4b43cd46",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "0496f58f-3287-4f32-a5bf-dc0a4b43cd46"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "academic_year",
+          "item": [
+            {
+              "name": "create",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"startYear\": 2026,\r\n    \"endYear\": 2027\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/academic-years",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "academic-years"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_all",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/academic-years",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "academic-years"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_by_Id",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/academic-years/9958630e-f32e-4915-a705-3777fdf9d61b",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "academic-years",
+                    "9958630e-f32e-4915-a705-3777fdf9d61b"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "activate",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/academic-years/activate",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "academic-years",
+                    "activate"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "department",
+          "item": [
+            {
+              "name": "get_all",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/departments",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "departments"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_by_Id",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/departments/1c0b339b-af5b-40ed-949d-4accc04521ce/overview",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "departments",
+                    "1c0b339b-af5b-40ed-949d-4accc04521ce",
+                    "overview"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "programme",
+          "item": [
+            {
+              "name": "create",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\": \"B.Tech Computer Science Engineering\",\r\n    \"code\": \"BTECH-CSE\",\r\n    \"departmentId\": \"1c0b339b-af5b-40ed-949d-4accc04521ce\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/programmes",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "programmes"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_all",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/programmes",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "programmes"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_by_Id",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/programmes/d1b68e75-29aa-4e76-b9e5-2d2adc055e32",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "programmes",
+                    "d1b68e75-29aa-4e76-b9e5-2d2adc055e32"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "update",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\": \"BE/B.Tech Computer Science Engineering\",\r\n    \"code\": \"BE/BTECH-CSE\",\r\n    \"departmentId\": \"1c0b339b-af5b-40ed-949d-4accc04521ce\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/programmes/d1b68e75-29aa-4e76-b9e5-2d2adc055e32",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "programmes",
+                    "d1b68e75-29aa-4e76-b9e5-2d2adc055e32"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "semester",
+          "item": [
+            {
+              "name": "create",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\": \"Semester 4\",\r\n    \"number\": 4,\r\n    \"programmeId\": \"d1b68e75-29aa-4e76-b9e5-2d2adc055e32\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/semesters",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "semesters"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_all",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": ""
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/semesters",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "semesters"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_by_Id",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/semesters/1d132b84-bc0c-4300-a9cb-7ec72baa2644",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "semesters",
+                    "1d132b84-bc0c-4300-a9cb-7ec72baa2644"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "update",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\": \"Semester 4\",\r\n    \"number\": 4,\r\n    \"programmeId\": \"d1b68e75-29aa-4e76-b9e5-2d2adc055e32\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/semesters/f4af50e7-89a8-4a45-9f78-2acb62e44aab",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "semesters",
+                    "f4af50e7-89a8-4a45-9f78-2acb62e44aab"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_by_programme",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/programmes/d1b68e75-29aa-4e76-b9e5-2d2adc055e32/semesters",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "programmes",
+                    "d1b68e75-29aa-4e76-b9e5-2d2adc055e32",
+                    "semesters"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "division",
+          "item": [
+            {
+              "name": "create",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/divisions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "divisions"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_all",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/divisions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "divisions"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_by_Id",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/divisions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "divisions"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "update",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\": \"C\",\r\n    \"semesterId\": \"d1d01967-e32d-479e-a649-b318cd7a120a\"\r\n\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/divisions/5026206d-5dd6-4557-9115-ae5309965ffa",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "divisions",
+                    "5026206d-5dd6-4557-9115-ae5309965ffa"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "subject",
+          "item": [
+            {
+              "name": "create",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\": \"Data Structures\",\r\n    \"code\": \"CS301\",\r\n    \"credits\": 4,\r\n    \"semesterId\": \"d1d01967-e32d-479e-a649-b318cd7a120a\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/subjects",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "subjects"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_all",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/subjects",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "subjects"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_by_Id",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/subjects/ff9f37ff-89b9-432f-85ba-a0bc497c1bc9",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "subjects",
+                    "ff9f37ff-89b9-432f-85ba-a0bc497c1bc9"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "update",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": ""
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\": \"Computer Network\",\r\n    \"code\": \"CS302\",\r\n    \"credits\": 4,\r\n    \"semesterId\": \"d1d01967-e32d-479e-a649-b318cd7a120a\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/subjects/ff9f37ff-89b9-432f-85ba-a0bc497c1bc9",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "subjects",
+                    "ff9f37ff-89b9-432f-85ba-a0bc497c1bc9"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_by_sem",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": ""
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/semesters/d1d01967-e32d-479e-a649-b318cd7a120a/subjects",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "semesters",
+                    "d1d01967-e32d-479e-a649-b318cd7a120a",
+                    "subjects"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "teacher_assignment",
+          "item": [
+            {
+              "name": "post_assignment",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"teacherId\": \"TEACHER_UUID\",\r\n    \"subjectId\": \"SUBJECT_UUID\",\r\n    \"divisionId\": \"DIVISION_UUID\",\r\n    \"academicYearId\": \"ACADEMIC_YEAR_UUID\",\r\n    \"assignmentType\": \"LECTURE\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/teacher-assignments/",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "teacher-assignments",
+                    ""
+                  ],
+                  "query": [
+                    {
+                      "key": "",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "teacher",
+          "item": [
+            {
+              "name": "create",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"CSE_Teacher_4\",\r\n  \"email\": \"teacher_C4.test@eduflow.local\",\r\n  \"password\": \"Teacher@123\",\r\n  \"employeeId\": \"EMP006\",\r\n  \"departmentId\": \"1c0b339b-af5b-40ed-949d-4accc04521ce\"\r\n}\r\n  ",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/teachers",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "teachers"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "assign_hod",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"teacherId\": \"62edd27c-8d74-4706-a3a0-e6519c1101dd\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/departments/1c0b339b-af5b-40ed-949d-4accc04521ce/hod",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "departments",
+                    "1c0b339b-af5b-40ed-949d-4accc04521ce",
+                    "hod"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "delete_teacher",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/teachers/ecd1e5c1-ef31-4810-85ac-8f8bf53784ae",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "teachers",
+                    "ecd1e5c1-ef31-4810-85ac-8f8bf53784ae"
+                  ],
+                  "query": [
+                    {
+                      "key": "",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "bearer_token_03nw",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_0y8g",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_0bjy",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_06b4",
+      "secret": true
+    }
+  ]
+}
