@@ -1,85 +1,81 @@
 package com.eduflow.backend.controller;
 
-import com.eduflow.backend.dto.request.TeacherAssignmentRequest;
+import com.eduflow.backend.dto.request.CreateTeacherAssignmentRequest;
+import com.eduflow.backend.dto.request.UpdateTeacherAssignmentRequest;
 import com.eduflow.backend.dto.response.TeacherAssignmentResponse;
+
 import com.eduflow.backend.service.TeacherAssignmentService;
 
 import jakarta.validation.Valid;
 
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/teacher-assignments")
+@RequestMapping("/api/admin/teacher-assignments")
+@RequiredArgsConstructor
 public class TeacherAssignmentController {
 
-    private final TeacherAssignmentService assignmentService;
+    private final TeacherAssignmentService teacherAssignmentService;
 
-    public TeacherAssignmentController(
-            TeacherAssignmentService assignmentService
-    ) {
-        this.assignmentService = assignmentService;
-    }
-
+    // CREATE ASSIGNMENT
     @PostMapping
-    public ResponseEntity<TeacherAssignmentResponse> create(
-            @Valid @RequestBody TeacherAssignmentRequest request
+    @ResponseStatus(HttpStatus.CREATED)
+    public TeacherAssignmentResponse create(
+            @Valid @RequestBody CreateTeacherAssignmentRequest request
     ) {
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(assignmentService.create(request));
+        return teacherAssignmentService.create(request);
     }
 
+    // GET ALL ASSIGNMENTS
     @GetMapping
     public List<TeacherAssignmentResponse> getAll() {
-        return assignmentService.getAll();
+        return teacherAssignmentService.getAll();
     }
 
+    // GET ASSIGNMENT BY ID
     @GetMapping("/{id}")
     public TeacherAssignmentResponse getById(
             @PathVariable UUID id
     ) {
-        return assignmentService.getById(id);
+        return teacherAssignmentService.getById(id);
     }
 
+    // GET ASSIGNMENTS BY TEACHER
     @GetMapping("/teacher/{teacherId}")
     public List<TeacherAssignmentResponse> getByTeacher(
             @PathVariable UUID teacherId
     ) {
-        return assignmentService.getByTeacher(teacherId);
+        return teacherAssignmentService.getByTeacher(teacherId);
     }
 
-    @GetMapping("/subject/{subjectId}")
-    public List<TeacherAssignmentResponse> getBySubject(
-            @PathVariable UUID subjectId
+    // GET ASSIGNMENTS BY DIVISION
+    @GetMapping("/division/{divisionId}")
+    public List<TeacherAssignmentResponse> getByDivision(
+            @PathVariable UUID divisionId
     ) {
-        return assignmentService.getBySubject(subjectId);
+        return teacherAssignmentService.getByDivision(divisionId);
     }
 
-    @GetMapping("/department/{departmentId}")
-    public List<TeacherAssignmentResponse> getByDepartment(
-            @PathVariable UUID departmentId
+    // GET ASSIGNMENTS BY ACADEMIC YEAR
+    @GetMapping("/academic-year/{academicYearId}")
+    public List<TeacherAssignmentResponse> getByAcademicYear(
+            @PathVariable UUID academicYearId
     ) {
-        return assignmentService.getByDepartment(departmentId);
+        return teacherAssignmentService.getByAcademicYear(academicYearId);
     }
 
+    // UPDATE ASSIGNMENT
     @PutMapping("/{id}")
     public TeacherAssignmentResponse update(
             @PathVariable UUID id,
-            @Valid @RequestBody TeacherAssignmentRequest request
+            @Valid @RequestBody UpdateTeacherAssignmentRequest request
     ) {
-        return assignmentService.update(id, request);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(
-            @PathVariable UUID id
-    ) {
-        assignmentService.delete(id);
-        return ResponseEntity.noContent().build();
+        return teacherAssignmentService.update(id, request);
     }
 }

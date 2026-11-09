@@ -1,18 +1,29 @@
 package com.eduflow.backend.service;
 
-import com.eduflow.backend.dto.request.TeacherAssignmentRequest;
+import com.eduflow.backend.dto.request.CreateTeacherAssignmentRequest;
+import com.eduflow.backend.dto.request.UpdateTeacherAssignmentRequest;
 import com.eduflow.backend.dto.response.TeacherAssignmentResponse;
+
+import com.eduflow.backend.entity.AcademicYear;
+import com.eduflow.backend.entity.Division;
+import com.eduflow.backend.entity.Subject;
+import com.eduflow.backend.entity.Teacher;
 import com.eduflow.backend.entity.TeacherAssignment;
+
+import com.eduflow.backend.mapper.TeacherAssignmentMapper;
+
+import com.eduflow.backend.repository.AcademicYearRepository;
+import com.eduflow.backend.repository.DivisionRepository;
+import com.eduflow.backend.repository.SubjectRepository;
 import com.eduflow.backend.repository.TeacherAssignmentRepository;
+import com.eduflow.backend.repository.TeacherRepository;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.List;
 import java.util.Locale;
@@ -22,273 +33,279 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TeacherAssignmentService {
 
-    private final TeacherAssignmentRepository assignmentRepository;
-    private final JdbcTemplate jdbcTemplate;
+    private final TeacherAssignmentRepository teacherAssignmentRepository;
+    private final TeacherRepository teacherRepository;
+    private final SubjectRepository subjectRepository;
+    private final DivisionRepository divisionRepository;
+    private final AcademicYearRepository academicYearRepository;
 
+    // CREATE TEACHER ASSIGNMENT
     @Transactional
-    public TeacherAssignmentResponse create(TeacherAssignmentRequest request) {
-        String assignmentType = normalizeType(request.assignmentType());
+    public TeacherAssignmentResponse create(
+            CreateTeacherAssignmentRequest request
+    ) {
 
-        validateReferences(
-                request.teacherId(),
-                request.subjectId(),
-                request.divisionId(),
+        Teacher teacher = getTeacher(request.teacherId());
+
+        Subject subject = getSubject(request.subjectId());
+
+        Division division = getDivision(request.divisionId());
+
+        AcademicYear academicYear = getAcademicYear(
                 request.academicYearId()
         );
 
-        checkDuplicate(
-                request.subjectId(),
-                request.divisionId(),
-                request.academicYearId(),
-                assignmentType,
-                null
+        String assignmentType = normalizeAssignmentType(
+                request.assignmentType()
+        );
+
+        validateSubjectAndDivision(subject, division);
+
+        validateDuplicateAssignment(
+                subject.getId(),
+                division.getId(),
+                academicYear.getId(),
+                assignmentType
         );
 
         TeacherAssignment assignment = new TeacherAssignment();
-        assignment.setTeacherId(request.teacherId());
-        assignment.setSubjectId(request.subjectId());
-        assignment.setDivisionId(request.divisionId());
-        assignment.setAcademicYearId(request.academicYearId());
+
+        assignment.setTeacher(teacher);
+        assignment.setSubject(subject);
+        assignment.setDivision(division);
+        assignment.setAcademicYear(academicYear);
         assignment.setAssignmentType(assignmentType);
 
-        return toResponse(saveAssignment(assignment));
+        TeacherAssignment savedAssignment =
+                teacherAssignmentRepository.save(assignment);
+
+        return TeacherAssignmentMapper.toResponse(savedAssignment);
     }
 
+    // GET ALL ASSIGNMENTS
     @Transactional(readOnly = true)
     public List<TeacherAssignmentResponse> getAll() {
-        return assignmentRepository.findAll()
+
+        return teacherAssignmentRepository.findAll()
                 .stream()
-                .map(this::toResponse)
+                .map(TeacherAssignmentMapper::toResponse)
                 .toList();
     }
 
+    // GET ASSIGNMENT BY ID
     @Transactional(readOnly = true)
     public TeacherAssignmentResponse getById(UUID id) {
-        return toResponse(findAssignment(id));
+
+        TeacherAssignment assignment =
+                teacherAssignmentRepository.findById(id)
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Teacher assignment not found"
+                        ));
+
+        return TeacherAssignmentMapper.toResponse(assignment);
     }
 
+    // GET ASSIGNMENTS BY TEACHER
     @Transactional(readOnly = true)
     public List<TeacherAssignmentResponse> getByTeacher(UUID teacherId) {
-        return assignmentRepository.findByTeacherId(teacherId)
+
+        if (!teacherRepository.existsById(teacherId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Teacher not found"
+            );
+        }
+
+        return teacherAssignmentRepository.findAllByTeacher_Id(teacherId)
                 .stream()
-                .map(this::toResponse)
+                .map(TeacherAssignmentMapper::toResponse)
                 .toList();
     }
 
+    // GET ASSIGNMENTS BY DIVISION
     @Transactional(readOnly = true)
-    public List<TeacherAssignmentResponse> getBySubject(UUID subjectId) {
-        return assignmentRepository.findBySubjectId(subjectId)
+    public List<TeacherAssignmentResponse> getByDivision(UUID divisionId) {
+
+        if (!divisionRepository.existsById(divisionId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Division not found"
+            );
+        }
+
+        return teacherAssignmentRepository.findAllByDivision_Id(divisionId)
                 .stream()
-                .map(this::toResponse)
+                .map(TeacherAssignmentMapper::toResponse)
                 .toList();
     }
 
+    // GET ASSIGNMENTS BY ACADEMIC YEAR
     @Transactional(readOnly = true)
-    public List<TeacherAssignmentResponse> getByDepartment(UUID departmentId) {
-        return assignmentRepository.findByTeacherDepartmentId(departmentId)
+    public List<TeacherAssignmentResponse> getByAcademicYear(
+            UUID academicYearId
+    ) {
+
+        if (!academicYearRepository.existsById(academicYearId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Academic year not found"
+            );
+        }
+
+        return teacherAssignmentRepository
+                .findAllByAcademicYear_Id(academicYearId)
                 .stream()
-                .map(this::toResponse)
+                .map(TeacherAssignmentMapper::toResponse)
                 .toList();
     }
 
+    // UPDATE TEACHER ASSIGNMENT
     @Transactional
     public TeacherAssignmentResponse update(
             UUID id,
-            TeacherAssignmentRequest request
+            UpdateTeacherAssignmentRequest request
     ) {
-        TeacherAssignment assignment = findAssignment(id);
-        String assignmentType = normalizeType(request.assignmentType());
 
-        validateReferences(
-                request.teacherId(),
-                request.subjectId(),
-                request.divisionId(),
+        TeacherAssignment assignment =
+                teacherAssignmentRepository.findById(id)
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Teacher assignment not found"
+                        ));
+
+        Teacher teacher = getTeacher(request.teacherId());
+
+        Subject subject = getSubject(request.subjectId());
+
+        Division division = getDivision(request.divisionId());
+
+        AcademicYear academicYear = getAcademicYear(
                 request.academicYearId()
         );
 
-        checkDuplicate(
-                request.subjectId(),
-                request.divisionId(),
-                request.academicYearId(),
-                assignmentType,
-                id
+        String assignmentType = normalizeAssignmentType(
+                request.assignmentType()
         );
 
-        assignment.setTeacherId(request.teacherId());
-        assignment.setSubjectId(request.subjectId());
-        assignment.setDivisionId(request.divisionId());
-        assignment.setAcademicYearId(request.academicYearId());
-        assignment.setAssignmentType(assignmentType);
+        validateSubjectAndDivision(subject, division);
 
-        return toResponse(saveAssignment(assignment));
-    }
-
-    @Transactional
-    public void delete(UUID id) {
-        TeacherAssignment assignment = findAssignment(id);
-
-        Boolean hasAttendance = jdbcTemplate.queryForObject(
-                """
-                SELECT EXISTS (
-                    SELECT 1
-                    FROM attendance_records
-                    WHERE teacher_assignment_id = ?
-                )
-                """,
-                Boolean.class,
-                id
-        );
-
-        if (Boolean.TRUE.equals(hasAttendance)) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "Cannot delete an assignment that has attendance records"
-            );
-        }
-
-        assignmentRepository.delete(assignment);
-    }
-
-    private TeacherAssignment findAssignment(UUID id) {
-        return assignmentRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Teacher assignment not found"
-                ));
-    }
-
-    private void validateReferences(
-            UUID teacherId,
-            UUID subjectId,
-            UUID divisionId,
-            UUID academicYearId
-    ) {
-        ensureExists("teachers", teacherId, "Teacher");
-        ensureExists("subjects", subjectId, "Subject");
-        ensureExists("divisions", divisionId, "Division");
-        ensureExists("academic_years", academicYearId, "Academic year");
-
-        Boolean compatible = jdbcTemplate.queryForObject(
-                """
-                SELECT EXISTS (
-                    SELECT 1
-                    FROM teachers t
-                    JOIN subjects s ON s.id = ?
-                    JOIN semesters sem ON sem.id = s.semester_id
-                    JOIN programmes p ON p.id = sem.programme_id
-                    JOIN divisions d ON d.id = ?
-                    WHERE t.id = ?
-                      AND d.semester_id = sem.id
-                      AND t.department_id = p.department_id
-                )
-                """,
-                Boolean.class,
-                subjectId,
-                divisionId,
-                teacherId
-        );
-
-        if (!Boolean.TRUE.equals(compatible)) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Teacher department, subject, and division must be compatible"
-            );
-        }
-    }
-
-    private void ensureExists(
-            String table,
-            UUID id,
-            String label
-    ) {
-        Boolean exists = jdbcTemplate.queryForObject(
-                "SELECT EXISTS (SELECT 1 FROM " + table + " WHERE id = ?)",
-                Boolean.class,
-                id
-        );
-
-        if (!Boolean.TRUE.equals(exists)) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    label + " not found"
-            );
-        }
-    }
-
-    private void checkDuplicate(
-            UUID subjectId,
-            UUID divisionId,
-            UUID academicYearId,
-            String assignmentType,
-            UUID excludedId
-    ) {
-        boolean duplicate;
-
-        if (excludedId == null) {
-            duplicate =
-                    assignmentRepository
-                            .existsBySubjectIdAndDivisionIdAndAcademicYearIdAndAssignmentType(
-                                    subjectId,
-                                    divisionId,
-                                    academicYearId,
-                                    assignmentType
-                            );
-        } else {
-            duplicate =
-                    assignmentRepository
-                            .existsBySubjectIdAndDivisionIdAndAcademicYearIdAndAssignmentTypeAndIdNot(
-                                    subjectId,
-                                    divisionId,
-                                    academicYearId,
-                                    assignmentType,
-                                    excludedId
-                            );
-        }
+        boolean duplicate =
+                teacherAssignmentRepository
+                        .existsBySubject_IdAndDivision_IdAndAcademicYear_IdAndAssignmentTypeAndIdNot(
+                                subject.getId(),
+                                division.getId(),
+                                academicYear.getId(),
+                                assignmentType,
+                                id
+                        );
 
         if (duplicate) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "A teacher is already assigned to this subject, division, academic year, and assignment type"
+                    "This assignment slot already exists"
             );
         }
+
+        assignment.setTeacher(teacher);
+        assignment.setSubject(subject);
+        assignment.setDivision(division);
+        assignment.setAcademicYear(academicYear);
+        assignment.setAssignmentType(assignmentType);
+
+        TeacherAssignment updatedAssignment =
+                teacherAssignmentRepository.save(assignment);
+
+        return TeacherAssignmentMapper.toResponse(updatedAssignment);
     }
 
-    private String normalizeType(String assignmentType) {
-        if (assignmentType == null || assignmentType.isBlank()) {
+    // HELPER: FIND TEACHER
+    private Teacher getTeacher(UUID teacherId) {
+
+        return teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Teacher not found"
+                ));
+    }
+
+    // HELPER: FIND SUBJECT
+    private Subject getSubject(UUID subjectId) {
+
+        return subjectRepository.findById(subjectId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Subject not found"
+                ));
+    }
+
+    // HELPER: FIND DIVISION
+    private Division getDivision(UUID divisionId) {
+
+        return divisionRepository.findById(divisionId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Division not found"
+                ));
+    }
+
+    // HELPER: FIND ACADEMIC YEAR
+    private AcademicYear getAcademicYear(UUID academicYearId) {
+
+        return academicYearRepository.findById(academicYearId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Academic year not found"
+                ));
+    }
+
+    // HELPER: VALIDATE SUBJECT AND DIVISION
+    private void validateSubjectAndDivision(
+            Subject subject,
+            Division division
+    ) {
+
+        UUID subjectSemesterId = subject.getSemester().getId();
+
+        UUID divisionSemesterId = division.getSemester().getId();
+
+        if (!subjectSemesterId.equals(divisionSemesterId)) {
+
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Assignment type is required"
+                    "Subject does not belong to the semester of this division"
             );
         }
-
-        return assignmentType.trim().toUpperCase(Locale.ROOT);
     }
 
-    private TeacherAssignment saveAssignment(TeacherAssignment assignment) {
-        try {
-            return assignmentRepository.saveAndFlush(assignment);
-        } catch (DataIntegrityViolationException exception) {
-            String message = exception.getMostSpecificCause().getMessage();
+    // HELPER: CHECK DUPLICATE ASSIGNMENT
+    private void validateDuplicateAssignment(
+            UUID subjectId,
+            UUID divisionId,
+            UUID academicYearId,
+            String assignmentType
+    ) {
 
-            if (message != null && message.contains("uq_teacher_assignment_slot")) {
-                throw new ResponseStatusException(
-                        HttpStatus.CONFLICT,
-                        "A teacher is already assigned to this subject, division, academic year, and assignment type"
-                );
-            }
+        boolean exists =
+                teacherAssignmentRepository
+                        .existsBySubject_IdAndDivision_IdAndAcademicYear_IdAndAssignmentType(
+                                subjectId,
+                                divisionId,
+                                academicYearId,
+                                assignmentType
+                        );
 
-            throw exception;
+        if (exists) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "This assignment slot already exists"
+            );
         }
     }
 
-    private TeacherAssignmentResponse toResponse(TeacherAssignment assignment) {
-        return new TeacherAssignmentResponse(
-                assignment.getId(),
-                assignment.getTeacherId(),
-                assignment.getSubjectId(),
-                assignment.getDivisionId(),
-                assignment.getAcademicYearId(),
-                assignment.getAssignmentType()
-        );
+    // HELPER: NORMALIZE ASSIGNMENT TYPE
+    private String normalizeAssignmentType(String assignmentType) {
+
+        return assignmentType.trim().toUpperCase(Locale.ROOT);
     }
 }
