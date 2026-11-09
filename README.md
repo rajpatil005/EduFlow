@@ -122,3 +122,9 @@ The proposed system follows a layered full-stack web application architecture.
 |                  PostgreSQL                    |
 |           JPA + Hibernate + Flyway             |
 +------------------------------------------------+
+```
+
+### Postman
+
+  EduFlow-API.postman_collection.json
+  EduFlow-Local.postman_environment.json
