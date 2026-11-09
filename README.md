@@ -126,5 +126,5 @@ The proposed system follows a layered full-stack web application architecture.
 
 ### Postman
 
-  EduFlow-API.postman_collection.json
-  EduFlow-Local.postman_environment.json
+- EduFlow-API.postman_collection.json
+- EduFlow-Local.postman_environment.json
