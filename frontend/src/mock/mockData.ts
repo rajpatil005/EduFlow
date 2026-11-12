@@ -133,4 +133,72 @@ export const mockResults = [
     finalEvaluation: 42,
     totalFinal: 66,
   },
+
 ];
+
+//-------- Admin Mock Data ---------
+
+// 1. Departments
+export const adminMockDepartments = [
+  { id: 'dept1', code: 'CS', name: 'Computer Science', hodId: 'u2' },
+  { id: 'dept2', code: 'IT', name: 'Information Technology', hodId: '' },
+  { id: 'dept3', code: 'BCA', name: 'Bachelor of Computer Applications', hodId: '' },
+];
+
+// 2. Programmes
+export const adminMockProgrammes = [
+  { id: 'p1', code: 'BSC-CS', name: 'BSc Computer Science', departmentId: 'dept1' },
+  { id: 'p2', code: 'BCA', name: 'Bachelor of Computer Applications', departmentId: 'dept3' },
+  { id: 'p3', code: 'MSC-CS', name: 'MSc Computer Science', departmentId: 'dept1' },
+];
+
+// 3. Academic Years
+export const adminMockYears = [
+  { id: 'y1', label: '2023-2024', programmeId: 'p1' },
+  { id: 'y2', label: '2024-2025', programmeId: 'p1' },
+  { id: 'y3', label: '2023-2024', programmeId: 'p2' },
+];
+
+// 4. Semesters
+export const adminMockSemesters = [
+  { id: 'sem1', number: '1', yearId: 'y1' },
+  { id: 'sem2', number: '2', yearId: 'y1' },
+  { id: 'sem3', number: '3', yearId: 'y2' },
+  { id: 'sem4', number: '1', yearId: 'y3' },
+];
+
+// 5. Divisions
+export const adminMockDivisions = [
+  { id: 'd1', name: 'A', semesterId: 'sem1' },
+  { id: 'd2', name: 'B', semesterId: 'sem1' },
+  { id: 'd3', name: 'A', semesterId: 'sem2' },
+];
+
+// 6. Subjects
+export const adminMockSubjects = [
+  { id: 's1', code: 'CS301', name: 'DBMS', semesterId: 'sem1' },
+  { id: 's2', code: 'CS302', name: 'Artificial Intelligence', semesterId: 'sem1' },
+  { id: 's3', code: 'CS303', name: 'Python', semesterId: 'sem2' },
+  { id: 's4', code: 'BCA101', name: 'C Programming', semesterId: 'sem4' },
+];
+
+// 7. Users (Admins, HODs, Teachers)
+export const adminMockUsers = [
+  // Admin
+  { id: 'u1', name: 'Aryan Admin', email: 'admin@eduflow.com', role: 'ADMIN', departmentId: '' },
+  
+  // HODs
+  { id: 'u2', name: 'Dr. Priya Sharma', email: 'priya.hod@eduflow.com', role: 'HOD', departmentId: 'dept1' },
+  { id: 'u3', name: 'Dr. Ramesh Patil', email: 'ramesh.hod@eduflow.com', role: 'HOD', departmentId: 'dept3' },
+  
+  // Teachers
+  { id: 'u4', name: 'Prof. Rajesh Kumar', email: 'rajesh@eduflow.com', role: 'TEACHER', departmentId: 'dept1' },
+  { id: 'u5', name: 'Prof. Sneha Desai', email: 'sneha@eduflow.com', role: 'TEACHER', departmentId: 'dept1' },
+  { id: 'u6', name: 'Prof. Amit Singh', email: 'amit@eduflow.com', role: 'TEACHER', departmentId: 'dept2' },
+];
+
+
+
+// all data delete you want so run this command in console side 
+// localStorage.clear();
+// location.reload();
