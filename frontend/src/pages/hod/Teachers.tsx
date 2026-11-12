@@ -4,16 +4,35 @@ import { Card, CardBody } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { Select } from '@/components/ui/Select';
 import { Modal } from '@/components/ui/Modal';
 import { LoadingState } from '@/components/common/LoadingState';
+import { useToast } from '@/components/ui/Toast';
 import { hodApi, HodTeacher } from '@/services/hodApi';
 import { mockHodTeachers } from '@/mock/mockData';
 
+const DESIGNATIONS = [
+  'Assistant Professor',
+  'Associate Professor',
+  'Professor',
+  'Lecturer',
+];
+
 export default function Teachers() {
+  const { showToast } = useToast();
   const [teachers, setTeachers] = useState<HodTeacher[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selectedTeacher, setSelectedTeacher] = useState<HodTeacher | null>(null);
+
+  // Add Teacher Modal
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [addForm, setAddForm] = useState({
+    name: '',
+    email: '',
+    employeeId: '',
+    designation: 'Assistant Professor',
+  });
 
   useEffect(() => {
     const load = async () => {
@@ -28,6 +47,33 @@ export default function Teachers() {
     };
     load();
   }, []);
+
+  const openAddModal = () => {
+    setAddForm({ name: '', email: '', employeeId: '', designation: 'Assistant Professor' });
+    setAddModalOpen(true);
+  };
+
+  const handleAddTeacher = () => {
+    if (!addForm.name.trim() || !addForm.email.trim() || !addForm.employeeId.trim()) {
+      showToast('Please fill in all required fields', 'error');
+      return;
+    }
+
+    const newTeacher: HodTeacher = {
+      id: `t-${Date.now()}`,
+      name: addForm.name.trim(),
+      email: addForm.email.trim(),
+      employeeId: addForm.employeeId.trim(),
+      designation: addForm.designation,
+      assignedSubjects: [],
+      workloadHours: 0,
+      status: 'ACTIVE',
+    };
+
+    setTeachers((prev) => [newTeacher, ...prev]);
+    showToast('Teacher added successfully', 'success');
+    setAddModalOpen(false);
+  };
 
   const filtered = teachers.filter((t) => {
     const q = search.toLowerCase();
@@ -47,6 +93,9 @@ export default function Teachers() {
       <PageHeader
         title="Department Teachers"
         subtitle="View and monitor faculty members, designations, and teaching workloads"
+        actions={
+          <Button onClick={openAddModal}>+ Add Teacher</Button>
+        }
       />
 
       <Card className="mb-6">
@@ -121,6 +170,51 @@ export default function Teachers() {
         </div>
       </Card>
 
+      {/* Add Teacher Modal */}
+      <Modal
+        open={addModalOpen}
+        onClose={() => setAddModalOpen(false)}
+        title="Add New Teacher"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setAddModalOpen(false)}>Cancel</Button>
+            <Button onClick={handleAddTeacher}>Save Teacher</Button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <Input
+            label="Full Name *"
+            value={addForm.name}
+            onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
+            placeholder="e.g. Dr. Rajesh Kumar"
+          />
+          <Input
+            label="Email Address *"
+            type="email"
+            value={addForm.email}
+            onChange={(e) => setAddForm({ ...addForm, email: e.target.value })}
+            placeholder="e.g. rajesh@eduflow.local"
+          />
+          <Input
+            label="Employee ID *"
+            value={addForm.employeeId}
+            onChange={(e) => setAddForm({ ...addForm, employeeId: e.target.value })}
+            placeholder="e.g. EMP015"
+          />
+          <Select
+            label="Designation *"
+            value={addForm.designation}
+            onChange={(e) => setAddForm({ ...addForm, designation: e.target.value })}
+          >
+            {DESIGNATIONS.map((d) => (
+              <option key={d} value={d}>{d}</option>
+            ))}
+          </Select>
+        </div>
+      </Modal>
+
+      {/* View Teacher Details Modal */}
       <Modal
         open={!!selectedTeacher}
         onClose={() => setSelectedTeacher(null)}

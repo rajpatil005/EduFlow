@@ -7,15 +7,27 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { LoadingState } from '@/components/common/LoadingState';
+import { useToast } from '@/components/ui/Toast';
 import { hodApi, HodSubject } from '@/services/hodApi';
 import { mockHodSubjects } from '@/mock/mockData';
 
 export default function Subjects() {
+  const { showToast } = useToast();
   const [subjects, setSubjects] = useState<HodSubject[]>([]);
   const [loading, setLoading] = useState(true);
   const [semesterFilter, setSemesterFilter] = useState('');
   const [search, setSearch] = useState('');
   const [selectedSubject, setSelectedSubject] = useState<HodSubject | null>(null);
+
+  // Add Subject Modal
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [addForm, setAddForm] = useState({
+    name: '',
+    code: '',
+    semester: '1',
+    credits: '',
+    assignedTeacher: '',
+  });
 
   useEffect(() => {
     const load = async () => {
@@ -38,6 +50,33 @@ export default function Subjects() {
     return matchesSem && matchesSearch;
   });
 
+  const openAddModal = () => {
+    setAddForm({ name: '', code: '', semester: '1', credits: '', assignedTeacher: '' });
+    setAddModalOpen(true);
+  };
+
+  const handleAddSubject = () => {
+    if (!addForm.name.trim() || !addForm.code.trim() || !addForm.credits.trim()) {
+      showToast('Please fill in all required fields', 'error');
+      return;
+    }
+
+    const newSubject: HodSubject = {
+      id: `sub-${Date.now()}`,
+      name: addForm.name.trim(),
+      code: addForm.code.trim(),
+      semester: parseInt(addForm.semester, 10),
+      programme: 'B.Tech CSE',
+      credits: parseInt(addForm.credits, 10),
+      assignedTeacher: addForm.assignedTeacher.trim() || 'Unassigned',
+      studentCount: 0,
+    };
+
+    setSubjects((prev) => [newSubject, ...prev]);
+    showToast('Subject added successfully', 'success');
+    setAddModalOpen(false);
+  };
+
   if (loading) {
     return <LoadingState message="Loading subjects..." />;
   }
@@ -47,6 +86,9 @@ export default function Subjects() {
       <PageHeader
         title="Department Subjects"
         subtitle="Curriculum subjects, semester mapping, credit allocations, and assigned faculty"
+        actions={
+          <Button onClick={openAddModal}>+ Add Subject</Button>
+        }
       />
 
       <Card className="mb-6">
@@ -127,6 +169,62 @@ export default function Subjects() {
         </div>
       )}
 
+      {/* Add Subject Modal */}
+      <Modal
+        open={addModalOpen}
+        onClose={() => setAddModalOpen(false)}
+        title="Add New Subject"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setAddModalOpen(false)}>Cancel</Button>
+            <Button onClick={handleAddSubject}>Save Subject</Button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <Input
+            label="Subject Name *"
+            value={addForm.name}
+            onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
+            placeholder="e.g. Data Structures"
+          />
+          <Input
+            label="Subject Code *"
+            value={addForm.code}
+            onChange={(e) => setAddForm({ ...addForm, code: e.target.value })}
+            placeholder="e.g. CS301"
+          />
+          <Select
+            label="Semester *"
+            value={addForm.semester}
+            onChange={(e) => setAddForm({ ...addForm, semester: e.target.value })}
+          >
+            <option value="1">Semester 1</option>
+            <option value="2">Semester 2</option>
+            <option value="3">Semester 3</option>
+            <option value="4">Semester 4</option>
+            <option value="5">Semester 5</option>
+            <option value="6">Semester 6</option>
+            <option value="7">Semester 7</option>
+            <option value="8">Semester 8</option>
+          </Select>
+          <Input
+            label="Credits *"
+            type="number"
+            value={addForm.credits}
+            onChange={(e) => setAddForm({ ...addForm, credits: e.target.value })}
+            placeholder="e.g. 4"
+          />
+          <Input
+            label="Assigned Faculty"
+            value={addForm.assignedTeacher}
+            onChange={(e) => setAddForm({ ...addForm, assignedTeacher: e.target.value })}
+            placeholder="e.g. Dr. Rajesh Kumar (optional)"
+          />
+        </div>
+      </Modal>
+
+      {/* Subject Details Modal */}
       <Modal
         open={!!selectedSubject}
         onClose={() => setSelectedSubject(null)}

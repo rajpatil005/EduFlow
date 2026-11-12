@@ -49,6 +49,9 @@ export default function HodDashboard() {
       <PageHeader
         title="Welcome, HOD"
         subtitle={dept ? `${dept.name} (${dept.code}) — Academic Overview` : "Here's an overview of your department activities"}
+        actions={
+          <Button onClick={() => navigate('/hod/teachers')}>+ Add Teacher</Button>
+        }
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
