@@ -139,7 +139,6 @@ export default function MarksEntry() {
     <div>
       <PageHeader 
         title="Marks Entry" 
-        // subtitle={`Use Arrow Keys/Enter. Scheme: UT(${scheme.utMaxMarks}) + CIE(${scheme.cieMaxMarks}) + Final(${scheme.finalMaxMarks})`} 
       />
 
       <Card className="mb-5">
@@ -183,7 +182,6 @@ export default function MarksEntry() {
           </div>
 
           <Card className="overflow-hidden mb-4">
-            {/* ⭐ Mobile var table scroll hoil */}
             <div className="overflow-x-auto w-full pb-2">
               
               {activeTab === 'UT' && (

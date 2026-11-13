@@ -18,7 +18,6 @@ interface DataTableProps<T> {
   onRowClick?: (row: T) => void;
 }
 
-// ⭐ extends object kela aani constraints kadhle
 export const DataTable = <T extends object>({
   columns,
   data,

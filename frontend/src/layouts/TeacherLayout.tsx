@@ -15,7 +15,7 @@ const teacherLinks: SidebarLink[] = [
   { label: 'Reports', path: '/teacher/reports' },
 ];
 
-export const TeacherLayout = () => { // ⭐ HE EXPORT ASLA PAHIJE
+export const TeacherLayout = () => { 
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

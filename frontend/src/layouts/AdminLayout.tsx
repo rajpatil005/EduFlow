@@ -15,6 +15,8 @@ const adminLinks: SidebarLink[] = [
   { label: 'Subjects', path: '/admin/subjects' },
   { label: 'HOD Management', path: '/admin/hod' },
   { label: 'Audit Logs', path: '/admin/audit' },
+  { label: 'Reports', path: '/admin/reports' }, 
+
 ];
 
 export const AdminLayout = () => {

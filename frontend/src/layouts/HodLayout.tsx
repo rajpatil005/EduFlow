@@ -6,10 +6,13 @@ import { useAuth } from '@/hooks/useAuth';
 
 const hodLinks: SidebarLink[] = [
   { label: 'Dashboard', path: '/hod/dashboard' },
+  { label: 'Department', path: '/hod/department' },
   { label: 'Teachers', path: '/hod/teachers' },
-  { label: 'Distribution', path: '/hod/distribution' },
-  { label: 'Verification', path: '/hod/verification' },
+  { label: 'Students', path: '/hod/students' },
   { label: 'Subjects', path: '/hod/subjects' },
+  { label: 'Teacher Assignments', path: '/hod/teacher-assignments' },
+  { label: 'Marks Approval', path: '/hod/marks-approval' },
+  { label: 'Attendance', path: '/hod/attendance' },
   { label: 'Reports', path: '/hod/reports' },
 ];
 
