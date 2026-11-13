@@ -43,12 +43,12 @@ export default function AdminDashboard() {
   }, []);
 
   const statCards = [
-    { label: 'Total Departments', value: stats.departments, color: 'from-blue-500 to-indigo-500', icon: '🏢', link: '/admin/departments' },
-    { label: 'Total Programmes', value: stats.programmes, color: 'from-purple-500 to-pink-500', icon: '🎓', link: '/admin/programmes' },
-    { label: 'Total Subjects', value: stats.subjects, color: 'from-emerald-500 to-teal-500', icon: '📚', link: '/admin/subjects' },
-    { label: 'Total Divisions', value: stats.divisions, color: 'from-amber-500 to-orange-500', icon: '👥', link: '/admin/divisions' },
-    { label: 'Total Teachers', value: stats.teachers, color: 'from-cyan-500 to-blue-500', icon: '👨‍🏫', link: '/admin/users' },
-    { label: 'Total HODs', value: stats.hods, color: 'from-rose-500 to-red-500', icon: '👔', link: '/admin/hod' },
+    { label: 'Total Departments', value: stats.departments, color: 'from-blue-500 to-indigo-500',  link: '/admin/departments' },
+    { label: 'Total Programmes', value: stats.programmes, color: 'from-purple-500 to-pink-500',  link: '/admin/programmes' },
+    { label: 'Total Subjects', value: stats.subjects, color: 'from-emerald-500 to-teal-500', link: '/admin/subjects' },
+    { label: 'Total Divisions', value: stats.divisions, color: 'from-amber-500 to-orange-500',  link: '/admin/divisions' },
+    { label: 'Total Teachers', value: stats.teachers, color: 'from-cyan-500 to-blue-500', link: '/admin/users' },
+    { label: 'Total HODs', value: stats.hods, color: 'from-rose-500 to-red-500', link: '/admin/hod' },
   ];
 
   return (
@@ -88,7 +88,7 @@ export default function AdminDashboard() {
         
         <Card>
           <CardHeader>
-            <CardTitle>⚡ Quick Actions</CardTitle>
+            <CardTitle> Quick Actions</CardTitle>
           </CardHeader>
           <CardBody className="space-y-3">
             <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" onClick={() => navigate('/admin/users')}>
@@ -117,7 +117,7 @@ export default function AdminDashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle>ℹ️ System Information</CardTitle>
+            <CardTitle> System Information</CardTitle>
           </CardHeader>
           <CardBody>
             <div className="space-y-4">

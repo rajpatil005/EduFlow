@@ -22,10 +22,10 @@ export default function TeacherDashboard() {
   });
 
   const cards = [
-    { label: 'My Subjects', value: stats.subjects, color: 'from-indigo-500 to-purple-500', icon: '📚', link: '/teacher/subjects' },
-    { label: 'Total Students', value: stats.students, color: 'from-emerald-500 to-teal-500', icon: '👨‍🎓', link: '/teacher/students' },
-    { label: 'Pending Marks', value: stats.pendingMarks, color: 'from-amber-500 to-orange-500', icon: '⏳', link: '/teacher/marks-entry' },
-    { label: 'Completed Marks', value: stats.completedMarks, color: 'from-blue-500 to-indigo-500', icon: '✅', link: '/teacher/reports' },
+    { label: 'My Subjects', value: stats.subjects, color: 'from-indigo-500 to-purple-500',  link: '/teacher/subjects' },
+    { label: 'Total Students', value: stats.students, color: 'from-emerald-500 to-teal-500',  link: '/teacher/students' },
+    { label: 'Pending Marks', value: stats.pendingMarks, color: 'from-amber-500 to-orange-500',  link: '/teacher/marks-entry' },
+    { label: 'Completed Marks', value: stats.completedMarks, color: 'from-blue-500 to-indigo-500',  link: '/teacher/reports' },
   ];
 
   return (
@@ -66,7 +66,7 @@ export default function TeacherDashboard() {
         {/* Quick Actions */}
         <Card>
           <CardHeader>
-            <CardTitle>⚡ Quick Actions</CardTitle>
+            <CardTitle> Quick Actions</CardTitle>
           </CardHeader>
           <CardBody className="space-y-3">
             <div 
@@ -74,7 +74,7 @@ export default function TeacherDashboard() {
               onClick={() => navigate('/teacher/marks-entry')}
             >
               <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded bg-indigo-100 text-indigo-600 flex items-center justify-center">✍️</div>
+                <div className="h-8 w-8 rounded bg-indigo-100 text-indigo-600 flex items-center justify-center"></div>
                 <p className="font-medium text-slate-700">Enter Marks</p>
               </div>
               <span className="text-slate-400">→</span>
@@ -85,7 +85,7 @@ export default function TeacherDashboard() {
               onClick={() => navigate('/teacher/attendance')}
             >
               <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded bg-emerald-100 text-emerald-600 flex items-center justify-center">✅</div>
+                <div className="h-8 w-8 rounded bg-emerald-100 text-emerald-600 flex items-center justify-center"></div>
                 <p className="font-medium text-slate-700">Mark Attendance</p>
               </div>
               <span className="text-slate-400">→</span>
@@ -96,7 +96,7 @@ export default function TeacherDashboard() {
               onClick={() => navigate('/teacher/reports')}
             >
               <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded bg-amber-100 text-amber-600 flex items-center justify-center">📊</div>
+                <div className="h-8 w-8 rounded bg-amber-100 text-amber-600 flex items-center justify-center"></div>
                 <p className="font-medium text-slate-700">Download Reports</p>
               </div>
               <span className="text-slate-400">→</span>
@@ -106,7 +106,7 @@ export default function TeacherDashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle>🕒 Recent Activity</CardTitle>
+            <CardTitle> Recent Activity</CardTitle>
           </CardHeader>
           <CardBody>
             <div className="space-y-4">
