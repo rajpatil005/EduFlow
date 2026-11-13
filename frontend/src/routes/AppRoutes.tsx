@@ -2,9 +2,14 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { TeacherLayout } from '@/layouts/TeacherLayout';
 import { AdminLayout } from '@/layouts/AdminLayout';
 import { HodLayout } from '@/layouts/HodLayout';
+import { MainLayout } from '@/layouts/MainLayout';
 
 // Login page --starting page
 import Login from '@/pages/auth/Login';
+
+// Common Pages (Available for all authenticated users)
+import Profile from '@/pages/common/Profile';
+import Settings from '@/pages/common/Settings';
 
 // Teacher Pages
 import TeacherDashboard from '@/pages/teacher/Dashboard';
@@ -35,7 +40,13 @@ export const AppRoutes = () => (
     <Route path="/login" element={<Login />} />
     <Route path="/" element={<Navigate to="/login" replace />} />
 
-{/* teacher routes */}
+    {/* Common User Routes (Profile & Settings wrapped in user's role layout) */}
+    <Route element={<MainLayout />}>
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/settings" element={<Settings />} />
+    </Route>
+
+    {/* teacher routes */}
     <Route path="/teacher" element={<TeacherLayout />}>
       <Route index element={<Navigate to="dashboard" replace />} />
       <Route path="dashboard" element={<TeacherDashboard />} />
@@ -48,7 +59,7 @@ export const AppRoutes = () => (
       <Route path="reports" element={<Reports />} />
     </Route>
 
-   {/* Admin routes */}
+    {/* Admin routes */}
     <Route path="/admin" element={<AdminLayout />}>
       <Route index element={<Navigate to="dashboard" replace />} />
       <Route path="dashboard" element={<AdminDashboard />} />
