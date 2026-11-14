@@ -1,18 +1,19 @@
-import {useEffect, useState} from 'react';
-import {PageHeader} from '@/components/layout/PageHeader';
-import {Card, CardBody} from '@/components/ui/Card';
-import {Button} from '@/components/ui/Button';
-import {Select} from '@/components/ui/Select';
-import {Modal} from '@/components/ui/Modal';
-import {DataTable, Column} from '@/components/tables/DataTable';
-import {useToast} from '@/components/ui/Toast';
-import {adminApi} from '@/services/adminApi';
+import { useEffect, useState } from 'react';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { Card, CardBody } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Select } from '@/components/ui/Select';
+import { Modal } from '@/components/ui/Modal';
+import { DataTable, Column } from '@/components/tables/DataTable';
+import { useToast } from '@/components/ui/Toast';
+import { adminApi } from '@/services/adminApi';
 
 interface Department {
   id: string;
   name: string;
   code: string;
   hodId?: string;
+  hodName?: string;
 }
 
 interface User {
@@ -26,14 +27,28 @@ export default function HodManagement() {
   const { showToast } = useToast();
   const [departments, setDepartments] = useState<Department[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
   
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDept, setSelectedDept] = useState<Department | null>(null);
   const [selectedHodId, setSelectedHodId] = useState('');
 
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const deptsRes = await adminApi.getDepartments();
+      const usersRes = await adminApi.getUsers();
+      setDepartments(deptsRes);
+      setUsers(usersRes);
+    } catch (error) {
+      showToast('Failed to load data', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    setDepartments(adminApi.getDepartments());
-    setUsers(adminApi.getUsers());
+    loadData();
   }, []);
 
   const openAssignModal = (dept: Department) => {
@@ -42,21 +57,20 @@ export default function HodManagement() {
     setModalOpen(true);
   };
 
-  const handleAssign = () => {
+  const handleAssign = async () => {
     if (!selectedDept) return;
     if (!selectedHodId) {
       return showToast('Please select an HOD', 'error');
     }
 
-    const updatedDepts = departments.map(d => 
-      d.id === selectedDept.id ? { ...d, hodId: selectedHodId } : d
-    );
-    
-    setDepartments(updatedDepts);
-    adminApi.saveDepartments(updatedDepts);
-    
-    setModalOpen(false);
-    showToast('HOD assigned successfully', 'success');
+    try {
+      await adminApi.assignHod(selectedDept.id, selectedHodId);
+      showToast('HOD assigned successfully', 'success');
+      setModalOpen(false);
+      loadData(); 
+    } catch (error) {
+      showToast('Failed to assign HOD', 'error');
+    }
   };
 
   const availableHods = users.filter(u => u.role === 'HOD');
@@ -69,6 +83,7 @@ export default function HodManagement() {
       header: 'Current HOD',
       render: (r) => {
         if (!r.hodId) return <span className="text-slate-400 italic">Not Assigned</span>;
+        if (r.hodName) return <span className="font-semibold text-indigo-700">{r.hodName}</span>;
         const hod = users.find(u => u.id === r.hodId);
         return hod ? <span className="font-semibold text-indigo-700">{hod.name}</span> : 'Unknown';
       }
@@ -102,6 +117,7 @@ export default function HodManagement() {
             columns={columns} 
             data={departments} 
             keyField="id" 
+            loading={loading}
             emptyTitle="No departments found" 
             emptyDescription="Please add departments first in Academic Structure."
           />

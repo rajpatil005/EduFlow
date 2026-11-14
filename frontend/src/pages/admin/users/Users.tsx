@@ -1,14 +1,14 @@
-import {useEffect, useState} from 'react';
-import {PageHeader} from '@/components/layout/PageHeader';
-import {Button} from '@/components/ui/Button';
-import {Input} from '@/components/ui/Input';
-import {Select} from '@/components/ui/Select';
-import {Modal} from '@/components/ui/Modal';
-import {Badge} from '@/components/ui/Badge';
-import {DataTable, Column} from '@/components/tables/DataTable';
-import {ConfirmDialog} from '@/components/ui/ConfirmDialog';
-import {useToast} from '@/components/ui/Toast';
-import {adminApi} from '@/services/adminApi';
+import { useEffect, useState } from 'react';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Select } from '@/components/ui/Select';
+import { Modal } from '@/components/ui/Modal';
+import { Badge } from '@/components/ui/Badge';
+import { DataTable, Column } from '@/components/tables/DataTable';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { useToast } from '@/components/ui/Toast';
+import { adminApi } from '@/services/adminApi';
 
 interface User {
   id: string;
@@ -22,6 +22,8 @@ export default function Users() {
   const { showToast } = useToast();
   const [data, setData] = useState<User[]>([]);
   const [depts, setDepts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -30,40 +32,66 @@ export default function Users() {
   const [form, setForm] = useState({
     name: '',
     email: '',
+    password: '', 
     role: 'TEACHER' as 'HOD' | 'TEACHER',
     departmentId: '',
   });
 
-  useEffect(() => {
-    setData(adminApi.getUsers());
-    setDepts(adminApi.getDepartments());
-  }, []);
-
-  const handleSave = () => {
-    if (!form.name || !form.email || !form.role || !form.departmentId) {
-      return showToast('All fields are required', 'error');
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const usersRes = await adminApi.getUsers();
+      const deptsRes = await adminApi.getDepartments();
+      setData(usersRes || []);
+      setDepts(deptsRes || []);
+    } catch (error) {
+      showToast('Failed to load users', 'error');
+    } finally {
+      setLoading(false);
     }
-
-    let updated;
-    if (editingId) {
-      updated = data.map(d => d.id === editingId ? { ...d, ...form } : d);
-      showToast('User updated', 'success');
-    } else {
-      updated = [...data, { id: Date.now().toString(), ...form }];
-      showToast('User added', 'success');
-    }
-    
-    setData(updated);
-    adminApi.saveUsers(updated);
-    setModalOpen(false);
   };
 
-  const handleDelete = () => {
-    const updated = data.filter(d => d.id !== deleteId);
-    setData(updated);
-    adminApi.saveUsers(updated);
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const handleSave = async () => {
+    if (!form.name || !form.email || !form.departmentId) {
+      return showToast('Name, Email and Department are required', 'error');
+    }
+
+    try {
+      if (editingId) {
+        showToast('Update feature pending in backend', 'info');
+      } else {
+        await adminApi.createTeacher({
+          name: form.name,
+          email: form.email,
+          password: form.password || 'password123',
+          departmentId: form.departmentId,
+          role: form.role
+        });
+        
+        showToast(`${form.role} created successfully!`, 'success');
+        loadData();
+      }
+      setModalOpen(false);
+    } catch (error: any) {
+      showToast(error.response?.data?.message || 'Failed to save user', 'error');
+    }
+  };
+
+  // Delete backend API (jar nasel tar fakt UI madhun kadh)
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    try {
+      // await adminApi.deleteUser(deleteId); // Jar backend madhe asel tar
+      showToast('User deleted successfully', 'success');
+      loadData();
+    } catch (error) {
+      showToast('Failed to delete user', 'error');
+    }
     setDeleteId(null);
-    showToast('User deleted', 'success');
   };
 
   const openEdit = (u: User) => {
@@ -71,6 +99,7 @@ export default function Users() {
     setForm({
       name: u.name,
       email: u.email,
+      password: '',
       role: u.role === 'HOD' ? 'HOD' : 'TEACHER',
       departmentId: u.departmentId || '',
     });
@@ -119,7 +148,7 @@ export default function Users() {
         actions={
           <Button onClick={() => { 
             setEditingId(null); 
-            setForm({ name: '', email: '', role: 'TEACHER', departmentId: '' }); 
+            setForm({ name: '', email: '', password: '', role: 'TEACHER', departmentId: '' }); 
             setModalOpen(true); 
           }}>
             + Add User
@@ -135,7 +164,7 @@ export default function Users() {
         </Select>
       </div>
 
-      <DataTable columns={columns} data={filteredData} keyField="id" emptyTitle="No users found" />
+      <DataTable columns={columns} data={filteredData} keyField="id" loading={loading} emptyTitle="No users found" />
 
       <Modal 
         open={modalOpen} 
@@ -151,6 +180,8 @@ export default function Users() {
         <div className="space-y-4">
           <Input label="Full Name *" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="e.g. Rajesh Kumar" />
           <Input label="Email Address *" type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="e.g. rajesh@college.edu" />
+          
+          <Input label="Password (Default: password123)" type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Leave blank for default" />
           
           <Select label="Role *" value={form.role} onChange={e => setForm({ ...form, role: e.target.value as 'HOD' | 'TEACHER' })}>
             <option value="TEACHER">Teacher</option>

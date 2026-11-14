@@ -5,6 +5,7 @@ export interface AuthUser {
   name: string;
   email: string;
   role: UserRole;
+  departmentId?: string;
 }
 
 export interface LoginRequest {
@@ -13,8 +14,7 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  accessToken?: string;
-  tokenType?: string;
+  token: string;        
   user: AuthUser;
 }
 
@@ -22,6 +22,6 @@ export interface AuthContextType {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (user: AuthUser) => void;
+  login: (user: AuthUser, token: string) => void;
   logout: () => void;
 }
