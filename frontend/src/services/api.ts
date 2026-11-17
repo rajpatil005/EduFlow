@@ -1,7 +1,5 @@
 import axios from 'axios';
-
 const env = (import.meta as any).env || {}; 
-
 const api = axios.create({
   baseURL: env.VITE_API_URL || 'http://localhost:8080/api', 
   headers: {
@@ -22,6 +20,7 @@ api.interceptors.response.use(
   (err) => {
     if (err.response?.status === 401) {
       localStorage.removeItem('token');
+      localStorage.removeItem('eduflow_user');
       if (window.location.pathname !== '/login') {
         window.location.href = '/login';
       }

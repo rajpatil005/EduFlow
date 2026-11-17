@@ -24,19 +24,16 @@ export default function AdminReports() {
     loadData();
   }, []);
 
-  // Mock Data (Backend yet na yet, he demo data disel)
   const mockStats = [
     { id: '1', deptName: 'Computer Science', programmeName: 'BSC-CS', students: 450, teachers: 15, avgAttendance: '85%' },
     { id: '2', deptName: 'Information Technology', programmeName: 'BSC-IT', students: 300, teachers: 10, avgAttendance: '78%' },
     { id: '3', deptName: 'Bachelor of Computer Applications', programmeName: 'BCA', students: 200, teachers: 8, avgAttendance: '82%' },
   ];
 
-  // Filter logic
   const filteredData = selectedDept 
     ? mockStats.filter(s => s.deptName === depts.find(d => d.id === selectedDept)?.name)
     : mockStats;
 
-  // Excel Export Logic
   const exportExcel = () => {
     if (filteredData.length === 0) return showToast('No data to export', 'error');
 
@@ -67,7 +64,7 @@ export default function AdminReports() {
       <PageHeader 
         title="Global Reports" 
         subtitle="Overview of all departments and programmes"
-        actions={<Button onClick={exportExcel}>📊 Download Excel</Button>}
+        actions={<Button onClick={exportExcel}> Download Excel</Button>}
       />
 
       <Card className="mb-5">

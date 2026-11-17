@@ -20,12 +20,9 @@ export default function AuditLogs() {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    // Load logs from localStorage
-    // Jar kahi logs nasel tar demo sathi khali dilele logs load hoil
     let existingLogs = adminApi.getAuditLogs();
     
     if (existingLogs.length === 0) {
-      // Demo Logs (Fakt pehila load kelyavar disel)
       existingLogs = [
         { id: '1', user: 'Admin', action: 'Assigned HOD', entity: 'Dr. Priya Sharma → Computer Science', timestamp: new Date().toISOString() },
         { id: '2', user: 'Admin', action: 'Added Teacher', entity: 'Prof. Rajesh Kumar', timestamp: new Date(Date.now() - 86400000).toISOString() },
@@ -38,7 +35,6 @@ export default function AuditLogs() {
     setLogs(existingLogs);
   }, []);
 
-  // Search logic
   const filteredLogs = logs.filter(log => 
     log.user.toLowerCase().includes(search.toLowerCase()) ||
     log.action.toLowerCase().includes(search.toLowerCase()) ||
