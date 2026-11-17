@@ -34,21 +34,19 @@ export default function Login() {
     }
 
     try {
-      // 1. Backend la call kar
+      // 1. Backend  call 
       const { data } = await api.post('/auth/login', { email, password });
 
-      // 2. Backend response flat ahe (tumcha response pramane)
-      const token = data.token; // "eyJhbGc..."
-      const backendRole = data.role; // "ADMIN"
+      // 2. Backend response 
+      const token = data.token; 
+      const backendRole = data.role; 
 
-      // 3. Role mismatch check kar
       if (backendRole !== role) {
         setError(`Invalid role. This account is registered as ${backendRole}.`);
         setLoading(false);
         return;
       }
 
-      // 4. User object banav (backend data madhun)
       const user: AuthUser = {
         id: data.userId,
         name: data.name,
@@ -56,10 +54,8 @@ export default function Login() {
         role: data.role,
       };
 
-      // 5. Context madhe save kar
       login(user, token);
 
-      // 6. Redirect to specific dashboard
       navigate(dashboardPaths[role as UserRole], { replace: true });
     } catch (err: any) {
       setError(err.response?.data?.message || 'Invalid email or password.');

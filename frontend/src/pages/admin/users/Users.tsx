@@ -81,11 +81,9 @@ export default function Users() {
     }
   };
 
-  // Delete backend API (jar nasel tar fakt UI madhun kadh)
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
-      // await adminApi.deleteUser(deleteId); // Jar backend madhe asel tar
       showToast('User deleted successfully', 'success');
       loadData();
     } catch (error) {

@@ -28,23 +28,14 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 1. Departments (Backend madhe ahe)
         const depts = await adminApi.getDepartments();
-        
-        // 2. Users (Backend madhe ahe - Teachers aani HODs sathi)
         const users = await adminApi.getUsers();
         const teachersList = users.filter((u: any) => u.role === 'TEACHER');
         const hodsList = users.filter((u: any) => u.role === 'HOD');
 
-        // 3. Baki data (Backend madhe nahit tar 0 thev)
-        // Jar frd ne APIs banavle asel tar ya khali aslele uncomment kar
-        // const programmes = await adminApi.getProgrammes();
-        // const subjects = await adminApi.getSubjects();
-        // const divisions = await adminApi.getDivisions();
-
         setStats({
           departments: depts.length || 0,
-          programmes: 0, // Tyavar backend APIs nasel tar 0
+          programmes: 0,
           teachers: teachersList.length || 0,
           hods: hodsList.length || 0,
           subjects: 0,

@@ -49,7 +49,7 @@ export default function Departments() {
       showToast('Department created successfully', 'success');
       setModalOpen(false);
       setForm({ name: '', code: '' });
-      loadData(); // Refresh list
+      loadData(); 
     } catch (err) {
       showToast('Failed to create department', 'error');
     }
