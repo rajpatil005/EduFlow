@@ -1,5 +1,6 @@
-import {useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import { useState } from 'react';
+import type { FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Card,
   CardBody,
@@ -25,10 +26,12 @@ export default function Login() {
  const [error, setError] = useState('');
 
  const { login } = useAuth();
+ const [loading, setLoading] = useState(false);
  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     setError('');
 
     if (!email.trim() || !password.trim()) {
@@ -36,21 +39,62 @@ export default function Login() {
       return;
     }
 
-    const name =
-      email.split('@')[0]
-        .replace(/[._-]/g, ' ')
-        .replace(/\b\w/g, (char) => char.toUpperCase()) || 'User';
+    try {
+      setLoading(true);
 
-    login({
-      id: crypto.randomUUID(),
-      name,
-      email: email.trim(),
-      role,
-    });
+      const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/auth/login`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: email.trim(),
+              password,
+              role,
+            }),
+          }
+      );
 
-    navigate(dashboardPaths[role], { replace: true });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+            data.message || data.error || 'Invalid email or password.'
+        );
+      }
+
+      // Validate backend response
+      if (!data.token || !data.userId || !data.role) {
+        throw new Error('Invalid authentication response from server.');
+      }
+
+      const authenticatedUser = {
+        id: data.userId,
+        name: data.name,
+        email: data.email,
+        role: data.role as UserRole,
+      };
+
+      // Save authenticated user and JWT token
+      login(authenticatedUser, data.token);
+
+      // Navigate according to the actual backend role
+      navigate(dashboardPaths[authenticatedUser.role], {
+        replace: true,
+      });
+
+    } catch (err) {
+      setError(
+          err instanceof Error
+              ? err.message
+              : 'Something went wrong. Please try again.'
+      );
+    } finally {
+      setLoading(false);
+    }
   };
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-100 p-4">
       <Card className="w-full max-w-md border border-slate-200 shadow-xl">
@@ -110,8 +154,12 @@ export default function Login() {
               </p>
             )}
 
-            <Button type="submit" className="w-full">
-              Sign In
+            <Button
+                type="submit"
+                className="w-full"
+                disabled={loading}
+            >
+              {loading ? 'Signing in...' : 'Sign In'}
             </Button>
 
             <p className="text-center text-xs text-slate-400">

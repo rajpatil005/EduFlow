@@ -22,6 +22,7 @@ interface AuthProviderProps {
 
 
 const STORAGE_KEY = 'eduflow_user';
+const TOKEN_KEY = 'token';
 
 export const AuthProvider = ({
   children,
@@ -63,17 +64,24 @@ export const AuthProvider = ({
     }
   }, []);
 
-  const login = useCallback((authenticatedUser: AuthUser) => {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(authenticatedUser)
-    );
+  const login = useCallback(
+      (authenticatedUser: AuthUser, token: string) => {
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(authenticatedUser)
+        );
 
-    setUser(authenticatedUser);
-  }, []);
+        localStorage.setItem(TOKEN_KEY, token);
+
+        setUser(authenticatedUser);
+      },
+      []
+  );
 
   const logout = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(TOKEN_KEY);
+
     setUser(null);
   }, []);
 
