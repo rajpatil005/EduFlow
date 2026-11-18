@@ -135,11 +135,13 @@ export default function MarksEntry() {
     }
   };
 
+  // ⭐ EXCEL STYLE INPUT CLASS
+  // Border hataun fakt focus kelyavar highlight hoil asa kela ahe
+  const excelInputClass = "w-full h-full min-h-[32px] px-2 py-1 text-center bg-transparent outline-none border-2 border-transparent focus:border-indigo-600 focus:bg-indigo-50/30 transition-colors m-0";
+
   return (
     <div>
-      <PageHeader 
-        title="Marks Entry" 
-      />
+      <PageHeader title="Marks Entry" />
 
       <Card className="mb-5">
         <CardBody>
@@ -162,99 +164,100 @@ export default function MarksEntry() {
 
       {loading ? <LoadingState /> : (
         <>
-          <div className="flex border-b border-slate-200 mb-4 overflow-x-auto whitespace-nowrap">
+          <div className="flex border-b border-slate-200 mb-4 overflow-x-auto whitespace-nowrap bg-slate-100 p-1 rounded-t-lg">
             <button
               onClick={() => setActiveTab('UT')}
-              className={`px-4 sm:px-6 py-3 font-semibold text-sm transition-colors ${
-                activeTab === 'UT' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-slate-500 hover:text-slate-700'
+              className={`px-4 sm:px-6 py-2 font-semibold text-sm transition-colors rounded-md ${
+                activeTab === 'UT' ? 'bg-white text-indigo-600 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'
               }`}
             >
               PROFORMA-C (Unit Test)
             </button>
             <button
               onClick={() => setActiveTab('CIE')}
-              className={`px-4 sm:px-6 py-3 font-semibold text-sm transition-colors ${
-                activeTab === 'CIE' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-slate-500 hover:text-slate-700'
+              className={`px-4 sm:px-6 py-2 font-semibold text-sm transition-colors rounded-md ${
+                activeTab === 'CIE' ? 'bg-white text-indigo-600 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'
               }`}
             >
               PROFORMA-E (CIE + Final)
             </button>
           </div>
 
-          <Card className="overflow-hidden mb-4">
-            <div className="overflow-x-auto w-full pb-2">
+          {/* ⭐ EXCEL SHEET STYLE TABLE */}
+          <Card className="overflow-hidden mb-4 shadow-sm border border-slate-300">
+            <div className="overflow-x-auto w-full">
               
               {activeTab === 'UT' && (
-                <table className="w-full text-sm text-center min-w-[800px]"> {/* ⭐ min-w add kela */}
-                  <thead className="bg-slate-50 border-b border-slate-200">
+                <table className="w-full text-sm min-w-[800px] border-collapse bg-white">
+                  <thead className="bg-slate-100">
                     <tr>
-                      <th className="px-2 py-2 text-left text-xs uppercase text-slate-600">Roll No</th>
-                      <th className="px-2 py-2 text-xs uppercase text-slate-600">UT-1 Marks<br/><span className="text-[10px] text-indigo-500 font-bold">(Max: {scheme.utMaxMarks})</span></th>
-                      <th className="px-2 py-2 text-xs uppercase text-slate-600">UT-1 Improve<br/><span className="text-[10px]">(If Any)</span></th>
-                      <th className="px-2 py-2 text-xs uppercase text-slate-600">Final UT-1</th>
-                      <th className="px-2 py-2 text-xs uppercase text-slate-600">UT-2 Marks<br/><span className="text-[10px] text-indigo-500 font-bold">(Max: {scheme.utMaxMarks})</span></th>
-                      <th className="px-2 py-2 text-xs uppercase text-slate-600">UT-2 Improve<br/><span className="text-[10px]">(If Any)</span></th>
-                      <th className="px-2 py-2 text-xs uppercase text-slate-600">Final UT-2</th>
-                      <th className="px-2 py-2 text-xs uppercase text-slate-600">Max of Two</th>
-                      <th className="px-2 py-2 text-xs uppercase text-indigo-600 font-bold bg-indigo-50">Marks to {scheme.utMaxMarks}<br/><span className="text-[10px]">(W: {scheme.utWeightagePercent}%)</span></th>
+                      <th className="border border-slate-300 px-2 py-2 text-left text-xs font-bold text-slate-700">Roll No</th>
+                      <th className="border border-slate-300 px-2 py-2 text-xs font-bold text-slate-700">UT-1 Marks<br/><span className="text-[10px] text-slate-500 font-normal">(Max: {scheme.utMaxMarks})</span></th>
+                      <th className="border border-slate-300 px-2 py-2 text-xs font-bold text-slate-700">UT-1 Improve</th>
+                      <th className="border border-slate-300 px-2 py-2 text-xs font-bold text-slate-700 bg-slate-200">Final UT-1</th>
+                      <th className="border border-slate-300 px-2 py-2 text-xs font-bold text-slate-700">UT-2 Marks<br/><span className="text-[10px] text-slate-500 font-normal">(Max: {scheme.utMaxMarks})</span></th>
+                      <th className="border border-slate-300 px-2 py-2 text-xs font-bold text-slate-700">UT-2 Improve</th>
+                      <th className="border border-slate-300 px-2 py-2 text-xs font-bold text-slate-700 bg-slate-200">Final UT-2</th>
+                      <th className="border border-slate-300 px-2 py-2 text-xs font-bold text-slate-700 bg-slate-200">Max of Two</th>
+                      <th className="border border-slate-300 px-2 py-2 text-xs font-bold text-indigo-800 bg-indigo-100">Marks to {scheme.utMaxMarks}</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody>
                     {students.map((s, rowIndex) => {
                       if (!inputRefs.current[rowIndex]) inputRefs.current[rowIndex] = [];
                       return (
-                        <tr key={s.studentId}>
-                          <td className="px-2 py-2 text-left font-medium">{s.rollNo}</td>
+                        <tr key={s.studentId} className="hover:bg-slate-50">
+                          <td className="border border-slate-300 px-2 py-0 text-left font-medium text-slate-700 bg-slate-50">{s.rollNo}</td>
                           
-                          <td className="px-2 py-2">
+                          <td className="border border-slate-300 p-0">
                             <input 
                               ref={el => { if (inputRefs.current[rowIndex]) inputRefs.current[rowIndex][0] = el; }}
                               type="number" min={0} max={scheme.utMaxMarks} 
                               value={s.ut1 === 0 ? '' : s.ut1}
                               onChange={(e) => setField(rowIndex, 'ut1', e.target.value)} 
                               onKeyDown={(e) => handleKeyDown(e, rowIndex, 0, 4)} 
-                              className="w-14 mx-auto block border border-slate-300 rounded px-1 py-1 text-center focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none" 
+                              className={excelInputClass} 
                             />
                           </td>
 
-                          <td className="px-2 py-2">
+                          <td className="border border-slate-300 p-0">
                             <input 
                               ref={el => { if (inputRefs.current[rowIndex]) inputRefs.current[rowIndex][1] = el; }}
                               type="number" min={0} max={scheme.utMaxMarks} 
                               value={s.ut1Improvement === 0 ? '' : s.ut1Improvement}
                               onChange={(e) => setField(rowIndex, 'ut1Improvement', e.target.value)} 
                               onKeyDown={(e) => handleKeyDown(e, rowIndex, 1, 4)} 
-                              className="w-14 mx-auto block border border-slate-300 rounded px-1 py-1 text-center focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none" 
+                              className={excelInputClass} 
                             />
                           </td>
                           
-                          <td className="px-2 py-2 font-semibold bg-slate-50">{s.finalUt1}</td>
+                          <td className="border border-slate-300 px-2 py-0 text-center font-semibold bg-slate-100 text-slate-700">{s.finalUt1}</td>
                           
-                          <td className="px-2 py-2">
+                          <td className="border border-slate-300 p-0">
                             <input 
                               ref={el => { if (inputRefs.current[rowIndex]) inputRefs.current[rowIndex][2] = el; }}
                               type="number" min={0} max={scheme.utMaxMarks} 
                               value={s.ut2 === 0 ? '' : s.ut2}
                               onChange={(e) => setField(rowIndex, 'ut2', e.target.value)} 
                               onKeyDown={(e) => handleKeyDown(e, rowIndex, 2, 4)} 
-                              className="w-14 mx-auto block border border-slate-300 rounded px-1 py-1 text-center focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none" 
+                              className={excelInputClass} 
                             />
                           </td>
 
-                          <td className="px-2 py-2">
+                          <td className="border border-slate-300 p-0">
                             <input 
                               ref={el => { if (inputRefs.current[rowIndex]) inputRefs.current[rowIndex][3] = el; }}
                               type="number" min={0} max={scheme.utMaxMarks} 
                               value={s.ut2Improvement === 0 ? '' : s.ut2Improvement}
                               onChange={(e) => setField(rowIndex, 'ut2Improvement', e.target.value)} 
                               onKeyDown={(e) => handleKeyDown(e, rowIndex, 3, 4)} 
-                              className="w-14 mx-auto block border border-slate-300 rounded px-1 py-1 text-center focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none" 
+                              className={excelInputClass} 
                             />
                           </td>
                           
-                          <td className="px-2 py-2 font-semibold bg-slate-50">{s.finalUt2}</td>
-                          <td className="px-2 py-2 font-semibold bg-slate-50">{s.maxUt}</td>
-                          <td className="px-2 py-2 font-bold text-indigo-700 bg-indigo-50">{s.convertedTo30}</td>
+                          <td className="border border-slate-300 px-2 py-0 text-center font-semibold bg-slate-100 text-slate-700">{s.finalUt2}</td>
+                          <td className="border border-slate-300 px-2 py-0 text-center font-semibold bg-slate-100 text-slate-700">{s.maxUt}</td>
+                          <td className="border border-slate-300 px-2 py-0 text-center font-bold text-indigo-700 bg-indigo-50">{s.convertedTo30}</td>
                         </tr>
                       );
                     })}
@@ -263,69 +266,69 @@ export default function MarksEntry() {
               )}
 
               {activeTab === 'CIE' && (
-                <table className="w-full text-sm text-center min-w-[800px]"> {/* ⭐ min-w add kela */}
-                  <thead className="bg-slate-50 border-b border-slate-200">
+                <table className="w-full text-sm min-w-[800px] border-collapse bg-white">
+                  <thead className="bg-slate-100">
                     <tr>
-                      <th className="px-2 py-2 text-left text-xs uppercase text-slate-600">Exam Seat</th>
-                      <th className="px-2 py-2 text-left text-xs uppercase text-slate-600">Name</th>
-                      <th className="px-2 py-2 text-xs uppercase text-slate-600">UT to {scheme.utMaxMarks}</th>
+                      <th className="border border-slate-300 px-2 py-2 text-left text-xs font-bold text-slate-700">Exam Seat</th>
+                      <th className="border border-slate-300 px-2 py-2 text-left text-xs font-bold text-slate-700">Name</th>
+                      <th className="border border-slate-300 px-2 py-2 text-xs font-bold text-slate-700 bg-slate-200">UT to {scheme.utMaxMarks}</th>
                       
                       {scheme.isCieEnabled && (
                         <>
-                          <th className="px-2 py-2 text-xs uppercase text-slate-600 bg-slate-50">{scheme.utWeightagePercent}% UT</th>
-                          <th className="px-2 py-2 text-xs uppercase text-slate-600">CIE Param<br/><span className="text-[10px] text-indigo-500 font-bold">(Max: {scheme.cieMaxMarks})</span></th>
-                          <th className="px-2 py-2 text-xs uppercase text-slate-600 bg-slate-50">{scheme.cieWeightagePercent}% CIE</th>
-                          <th className="px-2 py-2 text-xs uppercase text-indigo-600 bg-indigo-50">Total CIE</th>
+                          <th className="border border-slate-300 px-2 py-2 text-xs font-bold text-slate-700 bg-slate-200">{scheme.utWeightagePercent}% UT</th>
+                          <th className="border border-slate-300 px-2 py-2 text-xs font-bold text-slate-700">CIE Param<br/><span className="text-[10px] text-slate-500 font-normal">(Max: {scheme.cieMaxMarks})</span></th>
+                          <th className="border border-slate-300 px-2 py-2 text-xs font-bold text-slate-700 bg-slate-200">{scheme.cieWeightagePercent}% CIE</th>
+                          <th className="border border-slate-300 px-2 py-2 text-xs font-bold text-indigo-800 bg-indigo-100">Total CIE</th>
                         </>
                       )}
-                      <th className="px-2 py-2 text-xs uppercase text-emerald-600 bg-emerald-50">Final Eval<br/><span className="text-[10px]">(Max: {scheme.finalMaxMarks})</span></th>
-                      <th className="px-2 py-2 text-xs uppercase text-emerald-700 bg-emerald-100">Total Final</th>
+                      <th className="border border-slate-300 px-2 py-2 text-xs font-bold text-emerald-800 bg-emerald-100">Final Eval<br/><span className="text-[10px] font-normal">(Max: {scheme.finalMaxMarks})</span></th>
+                      <th className="border border-slate-300 px-2 py-2 text-xs font-bold text-emerald-900 bg-emerald-200">Total Final</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody>
                     {students.map((s, rowIndex) => {
                       if (!inputRefs.current[rowIndex]) inputRefs.current[rowIndex] = [];
                       return (
-                        <tr key={s.studentId}>
-                          <td className="px-2 py-2">
+                        <tr key={s.studentId} className="hover:bg-slate-50">
+                          <td className="border border-slate-300 p-0 bg-slate-50">
                             <input 
                               ref={el => { if (inputRefs.current[rowIndex]) inputRefs.current[rowIndex][0] = el; }}
                               type="text" value={s.examSeatNo} 
                               onChange={(e) => setField(rowIndex, 'examSeatNo', e.target.value)} 
                               onKeyDown={(e) => handleKeyDown(e, rowIndex, 0, 2)}
-                              className="w-20 border border-slate-300 rounded px-1 py-1 text-xs" 
+                              className={`${excelInputClass} text-left px-2`} 
                             />
                           </td>
-                          <td className="px-2 py-2 text-left font-medium">{s.studentName}</td>
-                          <td className="px-2 py-2 bg-slate-50">{s.convertedTo30}</td>
+                          <td className="border border-slate-300 px-2 py-0 text-left font-medium text-slate-700">{s.studentName}</td>
+                          <td className="border border-slate-300 px-2 py-0 text-center bg-slate-100 text-slate-700">{s.convertedTo30}</td>
                           
                           {scheme.isCieEnabled && (
                             <>
-                              <td className="px-2 py-2 bg-slate-50 font-semibold text-slate-700">{(s.convertedTo30 * (scheme.utWeightagePercent/100)).toFixed(2)}</td>
-                              <td className="px-2 py-2">
+                              <td className="border border-slate-300 px-2 py-0 text-center font-semibold text-slate-700 bg-slate-100">{(s.convertedTo30 * (scheme.utWeightagePercent/100)).toFixed(2)}</td>
+                              <td className="border border-slate-300 p-0">
                                 <input 
                                   ref={el => { if (inputRefs.current[rowIndex]) inputRefs.current[rowIndex][1] = el; }}
                                   type="number" min={0} max={scheme.cieMaxMarks} 
                                   value={s.cieParameters === 0 ? '' : s.cieParameters}
                                   onChange={(e) => setField(rowIndex, 'cieParameters', e.target.value)} 
                                   onKeyDown={(e) => handleKeyDown(e, rowIndex, 1, 2)}
-                                  className="w-16 mx-auto block border border-indigo-300 rounded px-1 py-1 text-center" 
+                                  className={excelInputClass} 
                                 />
                               </td>
-                              <td className="px-2 py-2 bg-slate-50 font-semibold text-slate-700">{(s.cieParameters * (scheme.cieWeightagePercent/100)).toFixed(2)}</td>
-                              <td className="px-2 py-2 font-bold text-indigo-700 bg-indigo-50">{s.totalCie}</td>
+                              <td className="border border-slate-300 px-2 py-0 text-center font-semibold text-slate-700 bg-slate-100">{(s.cieParameters * (scheme.cieWeightagePercent/100)).toFixed(2)}</td>
+                              <td className="border border-slate-300 px-2 py-0 text-center font-bold text-indigo-700 bg-indigo-50">{s.totalCie}</td>
                             </>
                           )}
 
-                          <td className="px-2 py-2 bg-emerald-50">
+                          <td className="border border-slate-300 p-0 bg-emerald-50">
                             <input 
                               type="number" min={0} max={scheme.finalMaxMarks} 
                               value={s.finalEvaluation === 0 ? '' : s.finalEvaluation}
                               onChange={(e) => setField(rowIndex, 'finalEvaluation', e.target.value)} 
-                              className="w-16 mx-auto block border border-emerald-300 rounded px-1 py-1 text-center" 
+                              className={excelInputClass} 
                             />
                           </td>
-                          <td className="px-2 py-2 font-bold text-emerald-800 bg-emerald-100">{s.totalFinal}</td>
+                          <td className="border border-slate-300 px-2 py-0 text-center font-bold text-emerald-800 bg-emerald-100">{s.totalFinal}</td>
                         </tr>
                       );
                     })}

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardBody, CardHeader, CardTitle, Input, Button } from '../../components/ui';
 import { useAuth } from '../../hooks/useAuth';
-import api from '../../services/api';
 import type { UserRole, AuthUser } from '../../types/auth';
 
 const dashboardPaths: Record<UserRole, string> = {
@@ -15,7 +14,7 @@ const dashboardPaths: Record<UserRole, string> = {
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<UserRole>('TEACHER');
+  const [role, setRole] = useState<UserRole>('ADMIN');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -27,41 +26,45 @@ export default function Login() {
     setError('');
     setLoading(true);
 
+    await new Promise((r) => setTimeout(r, 600));
+
     if (!email.trim() || !password.trim()) {
       setError('Please enter your email and password.');
       setLoading(false);
       return;
     }
+    const savedUsers = JSON.parse(localStorage.getItem('admin_users') || '[]');
+    
+    const mockUsers: AuthUser[] = [
+      { id: 'u1', name: 'Aryan Admin', email: 'admin@eduflow.com', role: 'ADMIN' },
+      { id: 'u2', name: 'Dr. Priya Sharma', email: 'priya.hod@eduflow.com', role: 'HOD' },
+      { id: 'u4', name: 'Prof. Rajesh Kumar', email: 'rajesh@eduflow.com', role: 'TEACHER' },
+    ];
 
-    try {
-      // 1. Backend  call 
-      const { data } = await api.post('/auth/login', { email, password });
+    const allUsers = [...mockUsers, ...savedUsers];
+    const foundUser = allUsers.find(
+      (u: any) => u.email === email.trim() && u.role === role
+    );
 
-      // 2. Backend response 
-      const token = data.token; 
-      const backendRole = data.role; 
-
-      if (backendRole !== role) {
-        setError(`Invalid role. This account is registered as ${backendRole}.`);
-        setLoading(false);
-        return;
-      }
-
-      const user: AuthUser = {
-        id: data.userId,
-        name: data.name,
-        email: data.email,
-        role: data.role,
+    if (!foundUser) {
+      const name = email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+      
+      const demoUser: AuthUser = {
+        id: crypto.randomUUID(),
+        name: name || 'User',
+        email: email.trim(),
+        role: role,
       };
 
-      login(user, token);
-
-      navigate(dashboardPaths[role as UserRole], { replace: true });
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Invalid email or password.');
-    } finally {
+      login(demoUser, 'mock-token-123'); // Mock token
+      navigate(dashboardPaths[role], { replace: true });
       setLoading(false);
+      return;
     }
+
+    login(foundUser, 'mock-token-123');
+    navigate(dashboardPaths[foundUser.role], { replace: true });
+    setLoading(false);
   };
 
   return (
@@ -80,8 +83,20 @@ export default function Login() {
         </CardHeader>
         <CardBody>
           <form onSubmit={handleSubmit} className="space-y-5">
-            <Input label="Email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <Input label="Password" type="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <Input 
+              label="Email" 
+              type="email" 
+              placeholder="you@example.com" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+            />
+            <Input 
+              label="Password" 
+              type="password" 
+              placeholder="Enter your password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+            />
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-700">Login As</label>
               <select
@@ -95,9 +110,14 @@ export default function Login() {
               </select>
             </div>
             {error && <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</p>}
+            
             <Button type="submit" className="w-full" loading={loading}>
               {loading ? 'Signing In...' : 'Sign In'}
             </Button>
+
+            <div className="p-3 bg-blue-50 rounded-lg text-xs text-blue-800">
+              <strong>Demo Login:</strong>If any model you can login.
+            </div>
           </form>
         </CardBody>
       </Card>
