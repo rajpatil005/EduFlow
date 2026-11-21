@@ -47,6 +47,10 @@
         {
           "name": "profile",
           "item": []
+        },
+        {
+          "name": "assessment",
+          "item": []
         }
       ]
     },
@@ -349,7 +353,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n    \"name\": \"B.Tech Computer Science Engineering\",\r\n    \"code\": \"BTECH-CSE\",\r\n    \"departmentId\": \"1c0b339b-af5b-40ed-949d-4accc04521ce\"\r\n}",
+                  "raw": "{\r\n    \"name\": \"B.Tech Computer Science Engineering\",\r\n    \"code\": \"BTECH-CSE\",\r\n    \"departmentId\": \"8e80f4c8-d37b-4119-ac42-f21509bc64ef\"\r\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -617,7 +621,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "",
+                  "raw": "{\r\n    \"name\": \"B\",\r\n    \"semesterId\": \"YOUR_SEMESTER_UUID\"\r\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -870,6 +874,102 @@
           ]
         },
         {
+          "name": "assessment",
+          "item": [
+            {
+              "name": "create",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"subjectId\": \"616832a4-f8e1-4247-a825-bc76433d81fd\",\r\n  \"code\": \"INT1\",\r\n  \"name\": \"Internal Examination 1\",\r\n  \"maxMarks\": 20,\r\n  \"weightage\": 20,\r\n  \"displayOrder\": 1\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/assessment-components",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "assessment-components"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "update",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"subjectId\": \"616832a4-f8e1-4247-a825-bc76433d81fd\",\r\n  \"code\": \"INT1\",\r\n  \"name\": \"Internal Examination 01\",\r\n  \"maxMarks\": 25,\r\n  \"weightage\": 25,\r\n  \"displayOrder\": 1\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/assessment-components/d884c235-aaa0-4c5c-acc9-3d632a208f8b",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "assessment-components",
+                    "d884c235-aaa0-4c5c-acc9-3d632a208f8b"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_all",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/assessment-components",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "assessment-components"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
           "name": "teacher_assignment",
           "item": [
             {
@@ -884,7 +984,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n    \"teacherId\": \"TEACHER_UUID\",\r\n    \"subjectId\": \"SUBJECT_UUID\",\r\n    \"divisionId\": \"DIVISION_UUID\",\r\n    \"academicYearId\": \"ACADEMIC_YEAR_UUID\",\r\n    \"assignmentType\": \"LECTURE\"\r\n}",
+                  "raw": "{\r\n    \"teacherId\": \"15927366-f55c-49bf-a8a5-84b76cac828e\",\r\n    \"subjectId\": \"f46a94d5-3219-40d1-9468-85eaf8a83b2a\",\r\n    \"divisionId\": \"ee2ee7cb-5b0a-4ab3-8e64-ab66476a72c8\",\r\n    \"academicYearId\": \"9958630e-f32e-4915-a705-3777fdf9d61b\",\r\n    \"assignmentType\": \"LECTURE\"\r\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -892,14 +992,14 @@
                   }
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/api/teacher-assignments/",
+                  "raw": "{{baseUrl}}/api/admin/teacher-assignments",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
-                    "teacher-assignments",
-                    ""
+                    "admin",
+                    "teacher-assignments"
                   ],
                   "query": [
                     {
@@ -907,6 +1007,167 @@
                       "value": "",
                       "disabled": true
                     }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_all",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/teacher-assignments",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "teacher-assignments"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_by_Id",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/teacher-assignments/37f734c1-e6b0-411e-b134-e367b1eed6cf",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "teacher-assignments",
+                    "37f734c1-e6b0-411e-b134-e367b1eed6cf"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_by_teacherId",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/teacher-assignments/teacher/15927366-f55c-49bf-a8a5-84b76cac828e",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "teacher-assignments",
+                    "teacher",
+                    "15927366-f55c-49bf-a8a5-84b76cac828e"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_by_divisionId",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/teacher-assignments/division/ee2ee7cb-5b0a-4ab3-8e64-ab66476a72c8",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "teacher-assignments",
+                    "division",
+                    "ee2ee7cb-5b0a-4ab3-8e64-ab66476a72c8"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_by_academicYearId",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/teacher-assignments/academic-year/9958630e-f32e-4915-a705-3777fdf9d61b",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "teacher-assignments",
+                    "academic-year",
+                    "9958630e-f32e-4915-a705-3777fdf9d61b"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "update",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"teacherId\": \"15927366-f55c-49bf-a8a5-84b76cac828e\",\r\n    \"subjectId\": \"f46a94d5-3219-40d1-9468-85eaf8a83b2a\",\r\n    \"divisionId\": \"ee2ee7cb-5b0a-4ab3-8e64-ab66476a72c8\",\r\n    \"academicYearId\": \"9958630e-f32e-4915-a705-3777fdf9d61b\",\r\n    \"assignmentType\": \"LECTURE\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/teacher-assignments/37f734c1-e6b0-411e-b134-e367b1eed6cf",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "teacher-assignments",
+                    "37f734c1-e6b0-411e-b134-e367b1eed6cf"
                   ]
                 }
               },
@@ -1016,6 +1277,227 @@
                       "value": "",
                       "disabled": true
                     }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "student",
+          "item": [
+            {
+              "name": "get_all",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/students",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "students"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "create",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\": \"Rahul Patil\",\r\n    \"email\": \"rahul@example.com\",\r\n    \"password\": \"Student@123\",\r\n    \"enrollmentNo\": \"EN2026001\",\r\n    \"rollNo\": \"01\",\r\n    \"divisionId\": \"b3669c57-a4d6-4569-a192-1522dc58f70e\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/students",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "students"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_by_division",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/students?divisionId=b3669c57-a4d6-4569-a192-1522dc58f70e",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "students"
+                  ],
+                  "query": [
+                    {
+                      "key": "divisionId",
+                      "value": "b3669c57-a4d6-4569-a192-1522dc58f70e"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get_by_Id",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/students/33995e28-d471-453d-a1a3-a3d2f5356e34",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "students",
+                    "33995e28-d471-453d-a1a3-a3d2f5356e34"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "update",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\": \"Rahul Patil\",\r\n    \"email\": \"rahul@example.com\",\r\n    \"enrollmentNo\": \"EN2026001\",\r\n    \"rollNo\": \"02\",\r\n    \"divisionId\": \"b3669c57-a4d6-4569-a192-1522dc58f70e\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/students/33995e28-d471-453d-a1a3-a3d2f5356e34",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "students",
+                    "33995e28-d471-453d-a1a3-a3d2f5356e34"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "activate",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\": \"Rahul Patil\",\r\n    \"email\": \"rahul@example.com\",\r\n    \"enrollmentNo\": \"EN2026001\",\r\n    \"rollNo\": \"02\",\r\n    \"divisionId\": \"b3669c57-a4d6-4569-a192-1522dc58f70e\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/students/33995e28-d471-453d-a1a3-a3d2f5356e34/activate",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "students",
+                    "33995e28-d471-453d-a1a3-a3d2f5356e34",
+                    "activate"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "deactivate",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\": \"Rahul Patil\",\r\n    \"email\": \"rahul@example.com\",\r\n    \"enrollmentNo\": \"EN2026001\",\r\n    \"rollNo\": \"02\",\r\n    \"divisionId\": \"b3669c57-a4d6-4569-a192-1522dc58f70e\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/students/33995e28-d471-453d-a1a3-a3d2f5356e34/deactivate",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "students",
+                    "33995e28-d471-453d-a1a3-a3d2f5356e34",
+                    "deactivate"
                   ]
                 }
               },

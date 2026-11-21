@@ -1,9 +1,11 @@
+
 package com.eduflow.backend.repository;
 
 import com.eduflow.backend.entity.TeacherAssignment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface TeacherAssignmentRepository
@@ -29,4 +31,9 @@ public interface TeacherAssignmentRepository
     List<TeacherAssignment> findAllByDivision_Id(UUID divisionId);
 
     List<TeacherAssignment> findAllByAcademicYear_Id(UUID academicYearId);
+
+    Optional<TeacherAssignment> findByIdAndTeacher_UserId(
+            UUID id,
+            UUID userId
+    );
 }
